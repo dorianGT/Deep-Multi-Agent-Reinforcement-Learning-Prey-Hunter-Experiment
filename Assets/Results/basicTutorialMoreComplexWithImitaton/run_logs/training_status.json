@@ -1,0 +1,38 @@
+{
+    "BasicMoreComplex": {
+        "checkpoints": [
+            {
+                "steps": 499980,
+                "file_path": "results\\basicTutorialMoreComplexWithImitaton.\\BasicMoreComplex\\BasicMoreComplex-499980.onnx",
+                "reward": -0.19097167821157546,
+                "creation_time": 1744296991.4490125,
+                "auxillary_file_paths": [
+                    "results\\basicTutorialMoreComplexWithImitaton.\\BasicMoreComplex\\BasicMoreComplex-499980.pt"
+                ]
+            },
+            {
+                "steps": 500016,
+                "file_path": "results\\basicTutorialMoreComplexWithImitaton.\\BasicMoreComplex\\BasicMoreComplex-500016.onnx",
+                "reward": -0.20309896902604538,
+                "creation_time": 1744296991.5053616,
+                "auxillary_file_paths": [
+                    "results\\basicTutorialMoreComplexWithImitaton.\\BasicMoreComplex\\BasicMoreComplex-500016.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500016,
+            "file_path": "results\\basicTutorialMoreComplexWithImitaton.\\BasicMoreComplex.onnx",
+            "reward": -0.20309896902604538,
+            "creation_time": 1744296991.5053616,
+            "auxillary_file_paths": [
+                "results\\basicTutorialMoreComplexWithImitaton.\\BasicMoreComplex\\BasicMoreComplex-500016.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}
