@@ -1,0 +1,38 @@
+{
+    "BasicSensor": {
+        "checkpoints": [
+            {
+                "steps": 499987,
+                "file_path": "results\\basicTensor.\\BasicSensor\\BasicSensor-499987.onnx",
+                "reward": 12.409091055393219,
+                "creation_time": 1745224902.8833816,
+                "auxillary_file_paths": [
+                    "results\\basicTensor.\\BasicSensor\\BasicSensor-499987.pt"
+                ]
+            },
+            {
+                "steps": 681299,
+                "file_path": "results\\basicTensor.\\BasicSensor\\BasicSensor-681299.onnx",
+                "reward": null,
+                "creation_time": 1745225179.715242,
+                "auxillary_file_paths": [
+                    "results\\basicTensor.\\BasicSensor\\BasicSensor-681299.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 681299,
+            "file_path": "results\\basicTensor.\\BasicSensor.onnx",
+            "reward": null,
+            "creation_time": 1745225179.715242,
+            "auxillary_file_paths": [
+                "results\\basicTensor.\\BasicSensor\\BasicSensor-681299.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

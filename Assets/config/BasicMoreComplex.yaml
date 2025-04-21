@@ -23,7 +23,45 @@ behaviors:
         strength: 1.0
 
     behavioral_cloning:
-      demo_path: Demos/Demo.demo #,Demos/Demo2.demo,Demos/Demo3.demo   plusieurs démos variés
+      demo_path: Demos/BasicMoreComplex/Demo.demo #,Demos/Demo2.demo,Demos/Demo3.demo   plusieurs démos variés
+      strength: 0.8               # copie assez fort au début
+      steps: 200000               # imitation active pendant 200k steps
+
+    keep_checkpoints: 10
+    max_steps: 2000000             # laisse-le apprendre longtemps
+    time_horizon: 64
+    summary_freq: 2000             # log régulier
+
+
+
+
+
+
+  BasicSensor:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 256               # plus stable
+      buffer_size: 4096             # plus de données avant update
+      learning_rate: 0.0001         # apprentissage plus fin
+      beta: 0.002                   # moins de régularisation
+      epsilon: 0.1                  # exploration moins agressive
+      lambd: 0.97                   # meilleur advantage estimate
+      num_epoch: 6                  # un peu plus d'update par batch
+      learning_rate_schedule: linear
+
+    network_settings:
+      normalize: false
+      hidden_units: 128             # réseau un peu plus costaud
+      num_layers: 3
+      vis_encode_type: simple
+
+    reward_signals:
+      extrinsic:
+        gamma: 0.99                # plus long terme
+        strength: 1.0
+
+    behavioral_cloning:
+      demo_path: Demos/BasicSensor/Demo.demo #,Demos/Demo2.demo,Demos/Demo3.demo   plusieurs démos variés
       strength: 0.8               # copie assez fort au début
       steps: 200000               # imitation active pendant 200k steps
 
