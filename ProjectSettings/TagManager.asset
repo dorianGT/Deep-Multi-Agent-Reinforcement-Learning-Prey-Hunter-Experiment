@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Wall
   - Target
+  - Prey
+  - Hunter
   layers:
   - Default
   - TransparentFX
@@ -16,8 +18,8 @@ TagManager:
   - 
   - Agent
   - 
-  - 
-  - 
+  - Prey
+  - Hunter
   - 
   - 
   - 

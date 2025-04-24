@@ -1,0 +1,71 @@
+{
+    "Hunter": {
+        "checkpoints": [
+            {
+                "steps": 499770,
+                "file_path": "results\\HP2.\\Hunter\\Hunter-499770.onnx",
+                "reward": 1.21875,
+                "creation_time": 1745507816.173667,
+                "auxillary_file_paths": [
+                    "results\\HP2.\\Hunter\\Hunter-499770.pt"
+                ]
+            },
+            {
+                "steps": 963846,
+                "file_path": "results\\HP2.\\Hunter\\Hunter-963846.onnx",
+                "reward": 1.391304347826087,
+                "creation_time": 1745508784.3028057,
+                "auxillary_file_paths": [
+                    "results\\HP2.\\Hunter\\Hunter-963846.pt"
+                ]
+            }
+        ],
+        "elo": 1482.3570508510454,
+        "final_checkpoint": {
+            "steps": 963846,
+            "file_path": "results\\HP2.\\Hunter.onnx",
+            "reward": 1.391304347826087,
+            "creation_time": 1745508784.3028057,
+            "auxillary_file_paths": [
+                "results\\HP2.\\Hunter\\Hunter-963846.pt"
+            ]
+        }
+    },
+    "Prey": {
+        "checkpoints": [
+            {
+                "steps": 499844,
+                "file_path": "results\\HP2.\\Prey\\Prey-499844.onnx",
+                "reward": 20.079999923706055,
+                "creation_time": 1745508044.155802,
+                "auxillary_file_paths": [
+                    "results\\HP2.\\Prey\\Prey-499844.pt"
+                ]
+            },
+            {
+                "steps": 800968,
+                "file_path": "results\\HP2.\\Prey\\Prey-800968.onnx",
+                "reward": 15.79363718205555,
+                "creation_time": 1745508784.600638,
+                "auxillary_file_paths": [
+                    "results\\HP2.\\Prey\\Prey-800968.pt"
+                ]
+            }
+        ],
+        "elo": 1497.9485643537396,
+        "final_checkpoint": {
+            "steps": 800968,
+            "file_path": "results\\HP2.\\Prey.onnx",
+            "reward": 15.79363718205555,
+            "creation_time": 1745508784.600638,
+            "auxillary_file_paths": [
+                "results\\HP2.\\Prey\\Prey-800968.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}
