@@ -3125,10 +3125,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab:
   - {fileID: 4377933626515690895, guid: a1834b6441f5f964186d094e8fd881e5, type: 3}
-  - {fileID: 3146705093901032357, guid: e0b2491dfd0bb9d4c9007eb87e252f4b, type: 3}
   spawnParent: {fileID: 372440330584634296}
-  objectCount: 50
-  areaSize: {x: 13, y: 130}
+  objectCount: 10
+  areaSize: {x: 13, y: 13}
 --- !u!1 &7831102898817821057
 GameObject:
   m_ObjectHideFlags: 0
