@@ -11,16 +11,17 @@ public class RoomGenerator2D : MonoBehaviour
 
     public float cellSize = 1f;
 
-    [Header("Borders and Corners")]
-    public GameObject wallPrefab;
-    public GameObject columnPrefab;
-
     [Header("Wall Settings")]
     public int wallLength = 1;
 
     [Header("GridObject Markers")]
     public GridObject wallMarker;
     public GridObject columnMarker;
+
+    [Header("Floor Settings")]
+    public GameObject floorPrefab;
+
+    public bool debug;
 
     public enum PlacementConstraint
     {
@@ -43,6 +44,8 @@ public class RoomGenerator2D : MonoBehaviour
 
         [Header("Placement Rule")]
         public PlacementConstraint placementConstraint = PlacementConstraint.None;
+
+        public bool allowRandomRotation = false;
     }
 
 
@@ -64,10 +67,32 @@ public class RoomGenerator2D : MonoBehaviour
 
         grid = new GridObject[width, height];
 
+        PlaceFloorTiles();
+
         PlaceBordersAndCorners();
 
         PlaceObjects();
     }
+
+    void PlaceFloorTiles()
+    {
+        if (floorPrefab == null) return;
+
+        float offset = cellSize / 2f;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector3 pos = new Vector3(x * cellSize + offset, 0, y * cellSize - offset);
+                GameObject tile = Instantiate(floorPrefab, transform);
+                tile.transform.localPosition = pos;
+                tile.transform.localRotation = Quaternion.identity;
+                tile.transform.localScale = new Vector3(cellSize, 1, cellSize);
+            }
+        }
+    }
+
 
     void PlaceObjects()
     {
@@ -130,9 +155,13 @@ public class RoomGenerator2D : MonoBehaviour
 
     void PlaceGridObject(int startX, int startY, GridObject gridObject)
     {
-        // Calcul du centre de la zone couverte
-        float offsetX = (gridObject.widthInCells * cellSize) / 2f - cellSize / 2f;
-        float offsetZ = (gridObject.heightInCells * cellSize) / 2f - cellSize / 2f;
+        bool rotated = gridObject.allowRandomRotation && Random.value < 0.5f;
+
+        int widthInCells = rotated ? gridObject.heightInCells : gridObject.widthInCells;
+        int heightInCells = rotated ? gridObject.widthInCells : gridObject.heightInCells;
+
+        float offsetX = (widthInCells * cellSize) / 2f - cellSize / 2f;
+        float offsetZ = (heightInCells * cellSize) / 2f - cellSize / 2f;
 
         Vector3 position = new Vector3(
             (startX * cellSize) + offsetX,
@@ -143,14 +172,25 @@ public class RoomGenerator2D : MonoBehaviour
         GameObject obj = Instantiate(gridObject.prefab, transform);
         obj.transform.localPosition = position;
 
-        for (int x = startX; x < startX + gridObject.widthInCells; x++)
+        if (rotated)
+            obj.transform.localRotation = Quaternion.Euler(0, 90f, 0);
+        else
+            obj.transform.localRotation = Quaternion.identity;
+
+        for (int x = 0; x < widthInCells; x++)
         {
-            for (int y = startY; y < startY + gridObject.heightInCells; y++)
+            for (int y = 0; y < heightInCells; y++)
             {
-                grid[x, y] = gridObject;
+                int gridX = startX + x;
+                int gridY = startY + y;
+                if (gridX >= 0 && gridX < width && gridY >= 0 && gridY < height)
+                {
+                    grid[gridX, gridY] = gridObject;
+                }
             }
         }
     }
+
 
 
     void PlaceBordersAndCorners()
@@ -184,9 +224,7 @@ public class RoomGenerator2D : MonoBehaviour
 
     void PlaceWallAndMarkCells(Vector3 localPosition, float yRotation, int startX, int startY, bool horizontal)
     {
-        if (wallPrefab == null || wallMarker == null) return;
-
-        GameObject wall = Instantiate(wallPrefab, transform);
+        GameObject wall = Instantiate(wallMarker.prefab, transform);
         wall.transform.localPosition = localPosition;
         wall.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
 
@@ -204,9 +242,7 @@ public class RoomGenerator2D : MonoBehaviour
 
     void MarkColumnCell(int x, int y, Vector3 localPosition)
     {
-        if (columnPrefab == null || columnMarker == null) return;
-
-        GameObject column = Instantiate(columnPrefab, transform);
+        GameObject column = Instantiate(columnMarker.prefab, transform);
         column.transform.localPosition = localPosition;
         column.transform.localRotation = Quaternion.identity;
 
@@ -239,13 +275,15 @@ public class RoomGenerator2D : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (!debug)
+            return;
         if (grid == null) return;
 
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3 pos = transform.position + new Vector3(x * cellSize, 0, y * cellSize);
+                Vector3 pos = transform.position + new Vector3(x * cellSize, 0.5f, y * cellSize);
                 Color color = new Color(1, 1, 1, 0.1f);
 
                 if (grid[x, y] != null)

@@ -8,6 +8,10 @@ TagManager:
   - Target
   - Prey
   - Hunter
+  - MovableObject
+  - Obstacle
+  - FxTemporaire
+  - Danger
   layers:
   - Default
   - TransparentFX

@@ -153,36 +153,54 @@ MonoBehaviour:
   seed: 0
   useRandomSeed: 0
   cellSize: 2
-  wallPrefab: {fileID: 1159351990771520630, guid: 325cb8b48a57cd2488d49dfb849148e3, type: 3}
-  columnPrefab: {fileID: 178811535428721102, guid: f8c0297a8d99e2747baeb5697c8ecb66, type: 3}
   wallLength: 2
   wallMarker:
-    prefab: {fileID: 0}
+    prefab: {fileID: 1159351990771520630, guid: 325cb8b48a57cd2488d49dfb849148e3, type: 3}
     probability: 1
     debugColor: {r: 0.048508644, g: 1, b: 0, a: 1}
     widthInCells: 1
     heightInCells: 1
     placementConstraint: 0
+    allowRandomRotation: 0
   columnMarker:
-    prefab: {fileID: 0}
+    prefab: {fileID: 178811535428721102, guid: f8c0297a8d99e2747baeb5697c8ecb66, type: 3}
     probability: 1
     debugColor: {r: 0.43204877, g: 0.6886792, b: 0.47845683, a: 1}
     widthInCells: 1
     heightInCells: 1
     placementConstraint: 0
+    allowRandomRotation: 0
+  floorPrefab: {fileID: 8313072724681005585, guid: 0c81722e3c1f83c48a35b9022ae44f8e, type: 3}
+  debug: 0
   objectPrefabs:
-  - prefab: {fileID: 4377933626515690895, guid: a1834b6441f5f964186d094e8fd881e5, type: 3}
-    probability: 0.1
-    debugColor: {r: 0.735849, g: 0.2256141, b: 0.2256141, a: 1}
-    widthInCells: 1
-    heightInCells: 1
-    placementConstraint: 2
-  - prefab: {fileID: 1159351990771520630, guid: 325cb8b48a57cd2488d49dfb849148e3, type: 3}
+  - prefab: {fileID: 381255459847991170, guid: e2287d625f5034a4293e0ed1f56d3167, type: 3}
     probability: 0.05
     debugColor: {r: 0.7372549, g: 0.69616616, b: 0.22745095, a: 1}
     widthInCells: 2
     heightInCells: 1
     placementConstraint: 2
+    allowRandomRotation: 1
+  - prefab: {fileID: 4377933626515690895, guid: a1834b6441f5f964186d094e8fd881e5, type: 3}
+    probability: 0.1
+    debugColor: {r: 0.22745095, g: 0.28072512, b: 0.7372549, a: 1}
+    widthInCells: 1
+    heightInCells: 1
+    placementConstraint: 2
+    allowRandomRotation: 0
+  - prefab: {fileID: 2457609113767055918, guid: 1a8df9f93ed8a8c42b5757184abc38d8, type: 3}
+    probability: 0.05
+    debugColor: {r: 0.46262014, g: 0.67373025, b: 0.8679245, a: 1}
+    widthInCells: 1
+    heightInCells: 1
+    placementConstraint: 2
+    allowRandomRotation: 0
+  - prefab: {fileID: 2119083391933518298, guid: 43b8858a70ce9314c8c5716a758c1f4b, type: 3}
+    probability: 0.05
+    debugColor: {r: 1, g: 0.0179291, b: 0, a: 1}
+    widthInCells: 1
+    heightInCells: 1
+    placementConstraint: 0
+    allowRandomRotation: 0
 --- !u!4 &892090634
 Transform:
   m_ObjectHideFlags: 0
