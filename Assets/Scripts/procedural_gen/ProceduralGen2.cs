@@ -22,6 +22,16 @@ public class RoomGenerator2D : MonoBehaviour
     public GridObject wallMarker;
     public GridObject columnMarker;
 
+    public enum PlacementConstraint
+    {
+        None,
+        RequiresWallNearby,
+        AvoidWallNearby,
+        RequiresColumnNearby,
+        AvoidColumnNearby
+    }
+
+
     [System.Serializable]
     public class GridObject
     {
@@ -30,7 +40,11 @@ public class RoomGenerator2D : MonoBehaviour
         public Color debugColor = Color.white;
         public int widthInCells = 1;
         public int heightInCells = 1;
+
+        [Header("Placement Rule")]
+        public PlacementConstraint placementConstraint = PlacementConstraint.None;
     }
+
 
     public List<GridObject> objectPrefabs;
 
@@ -67,6 +81,30 @@ public class RoomGenerator2D : MonoBehaviour
                     {
                         if (CanPlaceObject(x, y, gridObject))
                         {
+                            bool isNearWall = IsNearby(x, y, wallMarker);
+                            bool isNearColumn = IsNearby(x, y, columnMarker);
+
+                            if(!isNearWall)
+                                isNearWall = IsNearby(x+(gridObject.widthInCells-1), y + (gridObject.heightInCells - 1), wallMarker);
+                            if (!isNearColumn)
+                                isNearColumn = IsNearby(x + (gridObject.widthInCells - 1), y + (gridObject.heightInCells - 1), columnMarker);
+
+                            switch (gridObject.placementConstraint)
+                            {
+                                case PlacementConstraint.RequiresWallNearby:
+                                    if (!isNearWall) continue;
+                                    break;
+                                case PlacementConstraint.AvoidWallNearby:
+                                    if (isNearWall) continue;
+                                    break;
+                                case PlacementConstraint.RequiresColumnNearby:
+                                    if (!isNearColumn) continue;
+                                    break;
+                                case PlacementConstraint.AvoidColumnNearby:
+                                    if (isNearColumn) continue;
+                                    break;
+                            }
+
                             PlaceGridObject(x, y, gridObject);
                         }
                     }
@@ -177,6 +215,27 @@ public class RoomGenerator2D : MonoBehaviour
             grid[x, y] = columnMarker;
         }
     }
+
+    bool IsNearby(int x, int y, GridObject target, int range = 1)
+    {
+        for (int dx = -range; dx <= range; dx++)
+        {
+            for (int dy = -range; dy <= range; dy++)
+            {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                if ((dx != 0 || dy != 0) && nx >= 0 && nx < width && ny >= 0 && ny < height)
+                {
+                    if (grid[nx, ny] == target)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 
     private void OnDrawGizmos()
     {
