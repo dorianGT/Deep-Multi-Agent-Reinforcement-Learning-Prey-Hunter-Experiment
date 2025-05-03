@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+
 public class RoomGenerator2D : MonoBehaviour
 {
     public int width = 10;
@@ -22,6 +23,8 @@ public class RoomGenerator2D : MonoBehaviour
     public GameObject floorPrefab;
 
     public bool debug;
+
+    private List<GameObject> objects;
 
     public enum PlacementConstraint
     {
@@ -55,11 +58,15 @@ public class RoomGenerator2D : MonoBehaviour
 
     void Start()
     {
+        objects = new List<GameObject>();
         Generate();
     }
 
     public void Generate()
     {
+        ObjectPool.Instance.ReturnObjects(objects);
+        objects.Clear();
+
         if (useRandomSeed)
             seed = Random.Range(0, 100000);
 
@@ -85,9 +92,9 @@ public class RoomGenerator2D : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 Vector3 pos = new Vector3(x * cellSize + offset, 0, y * cellSize - offset);
-                GameObject tile = Instantiate(floorPrefab, transform);
-                tile.transform.localPosition = pos;
-                tile.transform.localRotation = Quaternion.identity;
+                GameObject tile = ObjectPool.Instance.GetObject(floorPrefab, pos,Quaternion.identity, transform);
+                //tile.transform.localPosition = pos;
+                //tile.transform.localRotation = Quaternion.identity;
                 tile.transform.localScale = new Vector3(cellSize, 1, cellSize);
             }
         }
@@ -168,8 +175,8 @@ public class RoomGenerator2D : MonoBehaviour
             0,
             (startY * cellSize) + offsetZ
         );
-
-        GameObject obj = Instantiate(gridObject.prefab, transform);
+        
+        GameObject obj = ObjectPool.Instance.GetObject(gridObject.prefab, position, Quaternion.identity, transform);
         obj.transform.localPosition = position;
 
         if (rotated)
@@ -224,9 +231,9 @@ public class RoomGenerator2D : MonoBehaviour
 
     void PlaceWallAndMarkCells(Vector3 localPosition, float yRotation, int startX, int startY, bool horizontal)
     {
-        GameObject wall = Instantiate(wallMarker.prefab, transform);
-        wall.transform.localPosition = localPosition;
-        wall.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        GameObject wall = ObjectPool.Instance.GetObject(wallMarker.prefab, localPosition, Quaternion.Euler(0f, yRotation, 0f), transform);
+        //wall.transform.localPosition = localPosition;
+        //wall.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
 
         for (int i = 0; i < wallLength; i++)
         {
@@ -241,10 +248,10 @@ public class RoomGenerator2D : MonoBehaviour
     }
 
     void MarkColumnCell(int x, int y, Vector3 localPosition)
-    {
-        GameObject column = Instantiate(columnMarker.prefab, transform);
-        column.transform.localPosition = localPosition;
-        column.transform.localRotation = Quaternion.identity;
+    {  
+        GameObject column = ObjectPool.Instance.GetObject(columnMarker.prefab, localPosition, Quaternion.identity, transform);
+        //column.transform.localPosition = localPosition;
+        //column.transform.localRotation = Quaternion.identity;
 
         if (x >= 0 && x < width && y >= 0 && y < height)
         {
