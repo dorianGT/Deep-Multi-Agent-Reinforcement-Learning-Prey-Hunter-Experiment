@@ -2986,7 +2986,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4175012294194308955
 Transform:
   m_ObjectHideFlags: 0
@@ -3065,7 +3065,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1504313807647301411}
   - component: {fileID: 3180621170238624227}
-  - component: {fileID: 5659772086636683889}
   m_Layer: 0
   m_Name: Hunter & Prey Scenario
   m_TagString: Untagged
@@ -3111,23 +3110,6 @@ MonoBehaviour:
   hunterCount: 2
   preyCount: 3
   timeLimit: 60
---- !u!114 &5659772086636683889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7712980970265460032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5302ac6b0e75b4664bddcdf7aeec3967, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab:
-  - {fileID: 4377933626515690895, guid: a1834b6441f5f964186d094e8fd881e5, type: 3}
-  spawnParent: {fileID: 372440330584634296}
-  objectCount: 10
-  areaSize: {x: 13, y: 13}
 --- !u!1 &7831102898817821057
 GameObject:
   m_ObjectHideFlags: 0
