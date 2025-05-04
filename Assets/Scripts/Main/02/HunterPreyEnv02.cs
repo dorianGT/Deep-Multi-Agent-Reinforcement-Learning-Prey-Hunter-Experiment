@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Unity.MLAgents;
+using static Unity.Burst.Intrinsics.X86.Avx;
+using System.Collections;
 
 /// <summary>
 /// Gère l'environnement de jeu pour un scénario de chasse entre chasseurs et proies.
@@ -15,11 +17,13 @@ public class HunterPreyEnv02 : MonoBehaviour
     public GameObject preyPrefab;
     public GameObject diePrefabHunter;
     public GameObject diePrefabPrey;
+    public GameObject energyPrey;
 
     [Header("Game Settings")]
     public int hunterCount = 2;
     public int preyCount = 3;
     public float timeLimit = 30f;
+    public int energyPreyCount = 3;
 
     public RoomGenerator2D roomGenerator;
 
@@ -30,6 +34,8 @@ public class HunterPreyEnv02 : MonoBehaviour
     private List<PreyAgent02> preys;
     private List<HunterAgent02> disabledHunters;
     private List<PreyAgent02> disabledPreys;
+
+    private List<GameObject> energyList;
 
     private float timer;
     private int hunterWins = 0;
@@ -65,13 +71,14 @@ public class HunterPreyEnv02 : MonoBehaviour
         preys = new List<PreyAgent02>();
         disabledHunters = new List<HunterAgent02>();
         disabledPreys = new List<PreyAgent02>();
+        energyList = new List<GameObject>();
 
         GameObject tmp;
         HunterAgent02 hAgent;
         PreyAgent02 pAgent;
         Vector3 position;
 
-        List<Vector3> positons = roomGenerator.GetAvailableWorldPositions(preyCount + hunterCount);
+        List<Vector3> positons = roomGenerator.GetAvailableWorldPositions(preyCount + hunterCount + energyPreyCount);
 
         // Spawn des chasseurs
         for (int i = 0; i < hunterCount; i++)
@@ -91,6 +98,13 @@ public class HunterPreyEnv02 : MonoBehaviour
             pAgent = tmp.GetComponent<PreyAgent02>();
             pAgent.SetEnv(this);
             preys.Add(pAgent);
+        }
+
+        for(int i = 0;i < energyPreyCount; i++)
+        {
+            position = positons[i + hunterCount + preyCount];
+            tmp = ObjectPool.Instance.GetObject(energyPrey, position, Quaternion.identity, this.transform);
+            energyList.Add(tmp);
         }
 
         // Création des groupes multi-agents
@@ -149,6 +163,42 @@ public class HunterPreyEnv02 : MonoBehaviour
         }      
     }
 
+    public void OnPreyEnergy(GameObject energyObj)
+    {
+        if (energyList.Contains(energyObj))
+        {
+            energyList.Remove(energyObj);
+            StartCoroutine(RespawnEnergyAtSamePosition(energyObj, 3f));
+        }
+    }
+
+    private IEnumerator RespawnEnergyAtSamePosition(GameObject energyObj, float delay)
+    {
+        energyObj.SetActive(false);
+
+        yield return new WaitForSeconds(delay);
+
+        energyObj.SetActive(true);
+        energyList.Add(energyObj);
+    }
+
+
+
+    public void OnPreyEnergyDepleted(PreyAgent02 preyAgent)
+    {
+        if (preys.Contains(preyAgent))
+        {
+            ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
+
+            preyAgent.gameObject.SetActive(false);
+            preys.Remove(preyAgent);
+            disabledPreys.Add(preyAgent);
+
+            CheckEndedGame();
+        }
+
+    }
+
     public void OnPreyEnterDanger(PreyAgent02 preyAgent)
     {
         if (preys.Contains(preyAgent))
@@ -205,17 +255,21 @@ public class HunterPreyEnv02 : MonoBehaviour
     /// <param name="timeExpired">Si vrai, l’épisode se termine par dépassement du temps</param>
     void EndEpisode(bool timeExpired)
     {
+        StopAllCoroutines();
+
         if (timeExpired)
         {
             hunterAgentGroup.SetGroupReward(-1);
             preyAgentGroup.SetGroupReward(1);
             preyWins++;
+            Debug.Log("Prey Win Count: " + preyWins);
         }
         else
         {
             hunterAgentGroup.SetGroupReward(1);
             preyAgentGroup.SetGroupReward(-1);
             hunterWins++;
+            Debug.Log("Hunter Win Count: " + hunterWins);
         }
 
         hunterAgentGroup.EndGroupEpisode();
@@ -229,6 +283,9 @@ public class HunterPreyEnv02 : MonoBehaviour
     /// </summary>
     private void ResetEnv()
     {
+        ObjectPool.Instance.ReturnObjects(energyList);
+        energyList.Clear();
+
         roomGenerator.Generate();
 
         timer = 0f;
@@ -268,7 +325,7 @@ public class HunterPreyEnv02 : MonoBehaviour
         // Désactive temporairement les chasseurs
         StopHunters();
 
-        List<Vector3> positons = roomGenerator.GetAvailableWorldPositions(preyCount + hunterCount);
+        List<Vector3> positons = roomGenerator.GetAvailableWorldPositions(preyCount + hunterCount + energyPreyCount);
 
         Vector3 position;
 
@@ -288,7 +345,6 @@ public class HunterPreyEnv02 : MonoBehaviour
             }
         }
 
-
         // Réinitialiser la position des proies
         for (int i = 0; i < preys.Count; i++)
         {
@@ -305,6 +361,11 @@ public class HunterPreyEnv02 : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < energyPreyCount; i++)
+        {
+            position = positons[i + hunterCount + preyCount];      
+            energyList.Add(ObjectPool.Instance.GetObject(energyPrey, position, Quaternion.identity, this.transform));
+        }
 
         // Relancer le compte à rebours pour libérer les chasseurs
         Invoke(nameof(ReleaseHunters), hidingTime);

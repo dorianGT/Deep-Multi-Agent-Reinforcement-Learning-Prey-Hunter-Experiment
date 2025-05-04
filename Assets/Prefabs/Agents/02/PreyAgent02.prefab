@@ -52,6 +52,7 @@ MonoBehaviour:
   - Danger
   - Obstacle
   - MovableObject
+  - EnergyPrey
   m_RaysPerDirection: 3
   m_MaxRayDegrees: 65
   m_SphereCastRadius: 0.5
@@ -374,7 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 0
+    VectorObservationSize: 1
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -383,7 +384,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: b5b6d30d863905046a068acee459a484, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: eb7e55e715b5a5447a24b6a9b3cd8122, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Prey
@@ -410,6 +411,10 @@ MonoBehaviour:
   MaxStep: 0
   moveSpeed: 15
   rotationSpeed: 200
+  minEnergy: 5
+  maxEnergy: 15
+  energyDecayRate: 1
+  energyGainAmount: 5
 --- !u!114 &6829058041116975583
 MonoBehaviour:
   m_ObjectHideFlags: 0

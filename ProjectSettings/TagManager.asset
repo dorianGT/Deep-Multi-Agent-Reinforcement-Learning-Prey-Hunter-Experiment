@@ -12,6 +12,7 @@ TagManager:
   - Obstacle
   - FxTemporaire
   - Danger
+  - EnergyPrey
   layers:
   - Default
   - TransparentFX

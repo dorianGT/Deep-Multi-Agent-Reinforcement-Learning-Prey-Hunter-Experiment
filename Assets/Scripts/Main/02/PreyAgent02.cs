@@ -19,6 +19,12 @@ public class PreyAgent02 : Agent
     /// </summary>
     public float rotationSpeed = 200f;
 
+    private float energy;
+    public float minEnergy = 5;
+    public float maxEnergy = 15f;
+    public float energyDecayRate = 1f; // énergie perdue par seconde
+    public float energyGainAmount = 5f; // énergie gagnée en touchant une EnergyPrey
+
     /// <summary>
     /// Référence vers l’environnement global.
     /// </summary>
@@ -35,6 +41,7 @@ public class PreyAgent02 : Agent
     /// </summary>
     public override void OnEpisodeBegin()
     {
+        energy = Random.Range(minEnergy, maxEnergy);
         // Peut être complété si besoin : repositionner, reset timer, etc.
     }
 
@@ -45,6 +52,7 @@ public class PreyAgent02 : Agent
     /// <param name="sensor">Le capteur d’observations.</param>
     public override void CollectObservations(VectorSensor sensor)
     {
+        sensor.AddObservation(energy / maxEnergy); // Normalisé entre 0 et 1
         // À compléter : distances aux chasseurs, raycasts, murs proches, etc.
     }
 
@@ -67,6 +75,16 @@ public class PreyAgent02 : Agent
 
         // Récompense pour avoir survécu un pas de temps
         AddReward(0.01f);
+
+        // Diminution de l'énergie
+        energy -= energyDecayRate * Time.deltaTime;
+
+        // Punition si l'énergie tombe à zéro
+        if (energy <= 0f)
+        {
+            SetReward(-1f); // ou une récompense personnalisée
+            env.OnPreyEnergyDepleted(this); // à implémenter dans l’environnement
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -89,6 +107,12 @@ public class PreyAgent02 : Agent
         {
             SetReward(-1f);
             env.OnPreyEnterDanger(this);
+        }
+        else if (other.CompareTag("EnergyPrey"))
+        {
+            energy = Mathf.Min(energy + energyGainAmount, maxEnergy);
+            AddReward(1f);
+            env.OnPreyEnergy(other.gameObject);
         }
     }
 }

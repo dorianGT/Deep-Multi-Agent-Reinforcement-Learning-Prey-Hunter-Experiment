@@ -52,9 +52,11 @@ MonoBehaviour:
   preyPrefab: {fileID: 6278828127012096297, guid: 09e84d914474dd049b7235f00a3e848d, type: 3}
   diePrefabHunter: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
   diePrefabPrey: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
+  energyPrey: {fileID: 6164445225575791239, guid: e482720823add32419da03c33fa726ac, type: 3}
   hunterCount: 2
   preyCount: 3
   timeLimit: 30
+  energyPreyCount: 3
   roomGenerator: {fileID: 5510980574608898171}
 --- !u!114 &5510980574608898171
 MonoBehaviour:

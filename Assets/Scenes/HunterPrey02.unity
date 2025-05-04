@@ -167,6 +167,8 @@ MonoBehaviour:
     initialSize: 15
   - prefab: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
     initialSize: 15
+  - prefab: {fileID: 6164445225575791239, guid: e482720823add32419da03c33fa726ac, type: 3}
+    initialSize: 30
 --- !u!4 &242204242
 Transform:
   m_ObjectHideFlags: 0
