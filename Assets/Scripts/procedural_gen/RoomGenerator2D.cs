@@ -305,7 +305,7 @@ public class RoomGenerator2D : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (grid[x, y] == null)
+                if (grid[x, y] == null && !IsNearby(x, y, wallMarker))
                 {
                     Vector3 worldPos = new Vector3(x * cellSize + offset, 0.5f, y * cellSize - offset);
                     positions.Add(worldPos);
@@ -324,6 +324,7 @@ public class RoomGenerator2D : MonoBehaviour
 
         return positions.GetRange(0, Mathf.Min(count, positions.Count));
     }
+
 
 
 

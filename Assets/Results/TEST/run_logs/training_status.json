@@ -1,47 +1,47 @@
 {
-    "Prey": {
-        "elo": 1197.0215031921136,
+    "Hunter": {
+        "elo": 1427.379166162473,
         "checkpoints": [
             {
-                "steps": 150,
-                "file_path": "results\\TEST.\\Prey\\Prey-150.onnx",
-                "reward": -1.0280833343664806,
-                "creation_time": 1746644215.5773697,
+                "steps": 183022,
+                "file_path": "results\\TEST.\\Hunter\\Hunter-183022.onnx",
+                "reward": -0.22500000894069672,
+                "creation_time": 1746646979.4780188,
                 "auxillary_file_paths": [
-                    "results\\TEST.\\Prey\\Prey-150.pt"
+                    "results\\TEST.\\Hunter\\Hunter-183022.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 150,
-            "file_path": "results\\TEST.\\Prey.onnx",
-            "reward": -1.0280833343664806,
-            "creation_time": 1746644215.5773697,
+            "steps": 183022,
+            "file_path": "results\\TEST.\\Hunter.onnx",
+            "reward": -0.22500000894069672,
+            "creation_time": 1746646979.4780188,
             "auxillary_file_paths": [
-                "results\\TEST.\\Prey\\Prey-150.pt"
+                "results\\TEST.\\Hunter\\Hunter-183022.pt"
             ]
         }
     },
-    "Hunter": {
-        "elo": 1200.0,
+    "Prey": {
+        "elo": 1088.6249042870552,
         "checkpoints": [
             {
                 "steps": 0,
-                "file_path": "results\\TEST.\\Hunter\\Hunter-0.onnx",
+                "file_path": "results\\TEST.\\Prey\\Prey-0.onnx",
                 "reward": null,
-                "creation_time": 1746644215.8304648,
+                "creation_time": 1746646979.7319906,
                 "auxillary_file_paths": [
-                    "results\\TEST.\\Hunter\\Hunter-0.pt"
+                    "results\\TEST.\\Prey\\Prey-0.pt"
                 ]
             }
         ],
         "final_checkpoint": {
             "steps": 0,
-            "file_path": "results\\TEST.\\Hunter.onnx",
+            "file_path": "results\\TEST.\\Prey.onnx",
             "reward": null,
-            "creation_time": 1746644215.8304648,
+            "creation_time": 1746646979.7319906,
             "auxillary_file_paths": [
-                "results\\TEST.\\Hunter\\Hunter-0.pt"
+                "results\\TEST.\\Prey\\Prey-0.pt"
             ]
         }
     },
