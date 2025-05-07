@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6463065974158728659}
   - component: {fileID: 2004528400114078531}
   - component: {fileID: 5510980574608898171}
+  - component: {fileID: 1079811314837132213}
   m_Layer: 0
   m_Name: Hunter & Prey Scenario 03
   m_TagString: Untagged
@@ -58,6 +59,8 @@ MonoBehaviour:
   timeLimit: 30
   energyPreyCount: 3
   roomGenerator: {fileID: 5510980574608898171}
+  gameUI: {fileID: 0}
+  commBuffer: {fileID: 1079811314837132213}
 --- !u!114 &5510980574608898171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +126,19 @@ MonoBehaviour:
     heightInCells: 1
     placementConstraint: 0
     allowRandomRotation: 0
+--- !u!114 &1079811314837132213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065445438422449328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfa3c640816fcd049988d7c87aec05d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  env: {fileID: 2004528400114078531}
 --- !u!1 &5691941424654247238
 GameObject:
   m_ObjectHideFlags: 0

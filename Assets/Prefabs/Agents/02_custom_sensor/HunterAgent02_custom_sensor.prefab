@@ -432,6 +432,7 @@ MonoBehaviour:
   rotationSpeed: 400
   rayPerception: {fileID: 3429217791394262599}
   observationSize: 56
+  enableCommunication: 0
 --- !u!114 &2242271266627093089
 MonoBehaviour:
   m_ObjectHideFlags: 0

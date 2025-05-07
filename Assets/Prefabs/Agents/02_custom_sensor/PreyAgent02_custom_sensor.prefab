@@ -208,6 +208,7 @@ MonoBehaviour:
   energyGainAmount: 5
   rayPerception: {fileID: 8704399113353869306}
   observationSize: 57
+  enableCommunication: 0
 --- !u!114 &5745294328655271650
 MonoBehaviour:
   m_ObjectHideFlags: 0

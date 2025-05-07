@@ -2,7 +2,10 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.LightTransport;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 /// <summary>
 /// Agent contrôlé par ML-Agents représentant un chasseur dans l'environnement.
@@ -28,6 +31,7 @@ public class HunterAgent02 : Agent
 
     public CustomRayPerception rayPerception;
     public int observationSize = 56;
+    public bool enableCommunication = true;
 
     /// <summary>
     /// Référence vers l’environnement principal, pour signaler les événements.
@@ -59,6 +63,13 @@ public class HunterAgent02 : Agent
     public void Deactivate() => active = false;
 
     private bool isDead = false; // Indique si l'agent est "mort"
+
+    public string agentId;
+
+    public override void Initialize()
+    {
+        agentId = System.Guid.NewGuid().ToString().Substring(0, 8); // ex: "a3f2c0d1"
+    }
 
     public void SetAgentDead()
     {
@@ -95,15 +106,56 @@ public class HunterAgent02 : Agent
             return;
         }
 
-        // À compléter : distances aux proies, obstacles, raycasts, etc.
+        int tmp = 0;
+
         if (rayPerception != null)
         {
-            float[] observations = rayPerception.GetObservations();
-            foreach (float val in observations)
+            float[][] obs = rayPerception.GetObservations();
+            CommunicationBuffer.Message message = new CommunicationBuffer.Message
+            {
+                rayResults = obs[1],
+                localPosition = transform.localPosition
+            };
+            env.commBuffer.SendMessageInfo(agentId, message,true);
+            foreach (float val in obs[0])
             {
                 sensor.AddObservation(val);
+                tmp++;
             }
         }
+
+        if (enableCommunication)
+        {
+            sensor.AddObservation(transform.localPosition);
+            tmp++;
+            int tmp2 = 0;
+            var messages = env.commBuffer.GetAllMessages(true);
+            foreach (var entry in messages)
+            {
+                if (entry.Key != agentId) // Ignorer soi-même
+                {
+                    tmp2++;
+                    sensor.AddObservation(entry.Value.localPosition);
+                    tmp++;
+                    foreach (var r in entry.Value.rayResults)
+                    {
+                        sensor.AddObservation(r);
+                        tmp++;
+                    }
+                }
+            }
+            //if (tmp2 != env.hunterCount-1)
+            //{
+            //    sensor.AddObservation(new float[(env.hunterCount-1-tmp2)*14 + env.hunterCount - 1]);
+            //}
+        }
+
+        //print(tmp);
+
+        //if (tmp < observationSize)
+        //{
+        //    sensor.AddObservation(new float[observationSize-tmp]);
+        //}
     }
 
     /// <summary>

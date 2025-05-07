@@ -1,35 +1,35 @@
 {
     "Prey": {
-        "elo": 1124.923571750958,
+        "elo": 1197.0215031921136,
         "checkpoints": [
             {
-                "steps": 40221,
-                "file_path": "results\\TEST.\\Prey\\Prey-40221.onnx",
-                "reward": -1.101578823695279,
-                "creation_time": 1746634645.7785544,
+                "steps": 150,
+                "file_path": "results\\TEST.\\Prey\\Prey-150.onnx",
+                "reward": -1.0280833343664806,
+                "creation_time": 1746644215.5773697,
                 "auxillary_file_paths": [
-                    "results\\TEST.\\Prey\\Prey-40221.pt"
+                    "results\\TEST.\\Prey\\Prey-150.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 40221,
+            "steps": 150,
             "file_path": "results\\TEST.\\Prey.onnx",
-            "reward": -1.101578823695279,
-            "creation_time": 1746634645.7785544,
+            "reward": -1.0280833343664806,
+            "creation_time": 1746644215.5773697,
             "auxillary_file_paths": [
-                "results\\TEST.\\Prey\\Prey-40221.pt"
+                "results\\TEST.\\Prey\\Prey-150.pt"
             ]
         }
     },
     "Hunter": {
-        "elo": 1254.501551271936,
+        "elo": 1200.0,
         "checkpoints": [
             {
                 "steps": 0,
                 "file_path": "results\\TEST.\\Hunter\\Hunter-0.onnx",
                 "reward": null,
-                "creation_time": 1746634646.0492535,
+                "creation_time": 1746644215.8304648,
                 "auxillary_file_paths": [
                     "results\\TEST.\\Hunter\\Hunter-0.pt"
                 ]
@@ -39,7 +39,7 @@
             "steps": 0,
             "file_path": "results\\TEST.\\Hunter.onnx",
             "reward": null,
-            "creation_time": 1746634646.0492535,
+            "creation_time": 1746644215.8304648,
             "auxillary_file_paths": [
                 "results\\TEST.\\Hunter\\Hunter-0.pt"
             ]

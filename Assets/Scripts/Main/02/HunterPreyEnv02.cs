@@ -28,6 +28,8 @@ public class HunterPreyEnv02 : MonoBehaviour
 
     public InGameUI gameUI;
 
+    public CommunicationBuffer commBuffer;
+
     private float hidingTime = 5f;
     private bool huntersReleased = false;
 
@@ -281,6 +283,7 @@ public class HunterPreyEnv02 : MonoBehaviour
     /// </summary>
     private void ResetEnv()
     {
+        commBuffer.ClearDic();
         ObjectPool.Instance.ReturnObjects(energyList);
         energyList.Clear();
 
