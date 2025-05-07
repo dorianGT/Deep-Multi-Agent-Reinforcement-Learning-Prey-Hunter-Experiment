@@ -106,7 +106,6 @@ public class HunterAgent02 : Agent
             return;
         }
 
-        int tmp = 0;
 
         if (rayPerception != null)
         {
@@ -120,14 +119,12 @@ public class HunterAgent02 : Agent
             foreach (float val in obs[0])
             {
                 sensor.AddObservation(val);
-                tmp++;
             }
         }
 
         if (enableCommunication)
         {
             sensor.AddObservation(transform.localPosition);
-            tmp++;
             int tmp2 = 0;
             var messages = env.commBuffer.GetAllMessages(true);
             foreach (var entry in messages)
@@ -136,26 +133,17 @@ public class HunterAgent02 : Agent
                 {
                     tmp2++;
                     sensor.AddObservation(entry.Value.localPosition);
-                    tmp++;
                     foreach (var r in entry.Value.rayResults)
                     {
                         sensor.AddObservation(r);
-                        tmp++;
                     }
                 }
             }
-            //if (tmp2 != env.hunterCount-1)
-            //{
-            //    sensor.AddObservation(new float[(env.hunterCount-1-tmp2)*14 + env.hunterCount - 1]);
-            //}
+            if (tmp2 != env.hunterCount-1)
+            {
+                sensor.AddObservation(new float[(env.hunterCount-1-tmp2)*17]);
+            }
         }
-
-        //print(tmp);
-
-        //if (tmp < observationSize)
-        //{
-        //    sensor.AddObservation(new float[observationSize-tmp]);
-        //}
     }
 
     /// <summary>

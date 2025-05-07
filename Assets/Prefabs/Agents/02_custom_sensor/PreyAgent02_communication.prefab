@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 200
+    VectorObservationSize: 94
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -207,8 +207,8 @@ MonoBehaviour:
   energyDecayRate: 1
   energyGainAmount: 5
   rayPerception: {fileID: 8704399113353869306}
-  observationSize: 200
-  enableCommunication: 0
+  observationSize: 94
+  enableCommunication: 1
   agentId: 
 --- !u!114 &5745294328655271650
 MonoBehaviour:

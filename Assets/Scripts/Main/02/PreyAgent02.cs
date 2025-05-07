@@ -95,10 +95,7 @@ public class PreyAgent02 : Agent
             return;
         }
 
-        int tmp = 0;
-
         sensor.AddObservation(energy / maxEnergy); // Normalisé entre 0 et 1
-        tmp++;
 
         if (rayPerception != null)
         {
@@ -112,14 +109,12 @@ public class PreyAgent02 : Agent
             foreach (float val in obs[0])
             {
                 sensor.AddObservation(val);
-                tmp++;
             }
         }
 
         if (enableCommunication)
         {
             sensor.AddObservation(transform.localPosition);
-            tmp++;
             int tmp2 = 0;
             var messages = env.commBuffer.GetAllMessages(false);
             foreach (var entry in messages)
@@ -128,25 +123,17 @@ public class PreyAgent02 : Agent
                 {
                     tmp2++;
                     sensor.AddObservation(entry.Value.localPosition);
-                    tmp++;
                     foreach (var r in entry.Value.rayResults)
                     {
                         sensor.AddObservation(r);
-                        tmp++;
                     }
                 }
             }
-            if (tmp2 != env.preyCount-1)
+            if (tmp2 != env.preyCount - 1)
             {
-                sensor.AddObservation(new float[(env.preyCount - tmp2) * 14 + +env.preyCount - 1]);
+                sensor.AddObservation(new float[(env.preyCount - tmp2-1) * 17]);
             }
         }
-
-
-        //if (tmp < observationSize)
-        //{
-        //    sensor.AddObservation(new float[observationSize - tmp]);
-        //}
     }
 
     /// <summary>
