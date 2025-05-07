@@ -25,6 +25,9 @@ public class PreyAgent02 : Agent
     public float energyDecayRate = 1f; // énergie perdue par seconde
     public float energyGainAmount = 5f; // énergie gagnée en touchant une EnergyPrey
 
+    public CustomRayPerception rayPerception;
+    public int observationSize = 56;
+
     /// <summary>
     /// Référence vers l’environnement global.
     /// </summary>
@@ -45,6 +48,31 @@ public class PreyAgent02 : Agent
         // Peut être complété si besoin : repositionner, reset timer, etc.
     }
 
+    private bool isDead = false; // Indique si l'agent est "mort"
+
+    public void SetAgentDead()
+    {
+        isDead = true;
+        gameObject.GetComponent<Collider>().enabled = false; // Ignore les collisions
+        SetChildrenActive(false);
+    }
+
+    public void SetAgentAlive()
+    {
+        isDead = false;
+        gameObject.GetComponent<Collider>().enabled = true;
+        SetChildrenActive(true);
+    }
+
+    // Fonction utilitaire pour activer/désactiver tous les enfants
+    private void SetChildrenActive(bool state)
+    {
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(state);
+        }
+    }
+
     /// <summary>
     /// Collecte les observations de l’environnement (à compléter).
     /// Permet à l’agent de percevoir les éléments autour.
@@ -52,7 +80,21 @@ public class PreyAgent02 : Agent
     /// <param name="sensor">Le capteur d’observations.</param>
     public override void CollectObservations(VectorSensor sensor)
     {
+        if (isDead)
+        {
+            sensor.AddObservation(new float[observationSize]);
+            return;
+        }
+
         sensor.AddObservation(energy / maxEnergy); // Normalisé entre 0 et 1
+        if (rayPerception != null)
+        {
+            float[] observations = rayPerception.GetObservations();
+            foreach (float val in observations)
+            {
+                sensor.AddObservation(val);
+            }
+        }
         // À compléter : distances aux chasseurs, raycasts, murs proches, etc.
     }
 
@@ -64,6 +106,8 @@ public class PreyAgent02 : Agent
     /// <param name="actions">Actions continues : [rotation, mouvement].</param>
     public override void OnActionReceived(ActionBuffers actions)
     {
+        if (isDead) return;
+
         float forward = Mathf.Clamp(actions.ContinuousActions[0], 0f, 1f);
         float rotation = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
@@ -74,7 +118,7 @@ public class PreyAgent02 : Agent
         transform.position += transform.forward * forward * moveSpeed * Time.deltaTime;
 
         // Récompense pour avoir survécu un pas de temps
-        AddReward(0.01f);
+        AddReward(0.0001f);
 
         // Diminution de l'énergie
         energy -= energyDecayRate * Time.deltaTime;
@@ -89,6 +133,8 @@ public class PreyAgent02 : Agent
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (isDead) return;
+
         if (collision.gameObject.CompareTag("Wall"))
         {
             SetReward(-1f);
@@ -103,6 +149,8 @@ public class PreyAgent02 : Agent
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isDead) return;
+
         if (other.CompareTag("Danger"))
         {
             SetReward(-1f);

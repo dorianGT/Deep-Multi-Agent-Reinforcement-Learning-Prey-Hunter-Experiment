@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Unity.MLAgents;
-using static Unity.Burst.Intrinsics.X86.Avx;
 using System.Collections;
 
 /// <summary>
@@ -27,6 +26,8 @@ public class HunterPreyEnv02 : MonoBehaviour
 
     public RoomGenerator2D roomGenerator;
 
+    public InGameUI gameUI;
+
     private float hidingTime = 5f;
     private bool huntersReleased = false;
 
@@ -38,8 +39,6 @@ public class HunterPreyEnv02 : MonoBehaviour
     private List<GameObject> energyList;
 
     private float timer;
-    private int hunterWins = 0;
-    private int preyWins = 0;
 
     private SimpleMultiAgentGroup hunterAgentGroup;
     private SimpleMultiAgentGroup preyAgentGroup;
@@ -154,7 +153,7 @@ public class HunterPreyEnv02 : MonoBehaviour
         {
             ObjectPool.Instance.GetObject(diePrefabPrey, prey.transform.position, Quaternion.identity);
 
-            prey.SetActive(false);         
+            preyAgent.SetAgentDead();
 
             preys.Remove(preyAgent);
             disabledPreys.Add(preyAgent);
@@ -190,7 +189,8 @@ public class HunterPreyEnv02 : MonoBehaviour
         {
             ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
 
-            preyAgent.gameObject.SetActive(false);
+            preyAgent.SetAgentDead();
+
             preys.Remove(preyAgent);
             disabledPreys.Add(preyAgent);
 
@@ -205,7 +205,7 @@ public class HunterPreyEnv02 : MonoBehaviour
         {
             ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
 
-            preyAgent.gameObject.SetActive(false);
+            preyAgent.SetAgentDead();
 
             preys.Remove(preyAgent);
             disabledPreys.Add(preyAgent);
@@ -220,7 +220,7 @@ public class HunterPreyEnv02 : MonoBehaviour
         {
             ObjectPool.Instance.GetObject(diePrefabHunter, hunterAgent.transform.position, Quaternion.identity);
 
-            hunterAgent.gameObject.SetActive(false);
+            hunterAgent.SetAgentDead();
 
             hunters.Remove(hunterAgent);
             disabledHunters.Add(hunterAgent);
@@ -261,15 +261,13 @@ public class HunterPreyEnv02 : MonoBehaviour
         {
             hunterAgentGroup.SetGroupReward(-1);
             preyAgentGroup.SetGroupReward(1);
-            preyWins++;
-            Debug.Log("Prey Win Count: " + preyWins);
+            gameUI.PreyWin();
         }
         else
         {
             hunterAgentGroup.SetGroupReward(1);
             preyAgentGroup.SetGroupReward(-1);
-            hunterWins++;
-            Debug.Log("Hunter Win Count: " + hunterWins);
+            gameUI.HunterWin();
         }
 
         hunterAgentGroup.EndGroupEpisode();
@@ -294,7 +292,7 @@ public class HunterPreyEnv02 : MonoBehaviour
         foreach (var hunter in disabledHunters)
         {
             hunters.Add(hunter);
-            hunter.gameObject.SetActive(true);
+            hunter.SetAgentAlive();
 
             Rigidbody hunterRb = hunter.GetComponent<Rigidbody>();
             if (hunterRb != null)
@@ -310,7 +308,7 @@ public class HunterPreyEnv02 : MonoBehaviour
         foreach (var prey in disabledPreys)
         {
             preys.Add(prey);
-            prey.gameObject.SetActive(true);
+            prey.SetAgentAlive();
 
             Rigidbody preyRb = prey.GetComponent<Rigidbody>();
             if (preyRb != null)

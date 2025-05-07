@@ -1,5 +1,6 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ public class HunterAgent02 : Agent
     /// Indique si le chasseur est activé (autorisé à se déplacer).
     /// </summary>
     private bool active = false;
+
+    public CustomRayPerception rayPerception;
+    public int observationSize = 56;
 
     /// <summary>
     /// Référence vers l’environnement principal, pour signaler les événements.
@@ -54,14 +58,52 @@ public class HunterAgent02 : Agent
     /// </summary>
     public void Deactivate() => active = false;
 
+    private bool isDead = false; // Indique si l'agent est "mort"
+
+    public void SetAgentDead()
+    {
+        isDead = true;
+        gameObject.GetComponent<Collider>().enabled = false; // Ignore les collisions
+        SetChildrenActive(false);
+    }
+
+    public void SetAgentAlive()
+    {
+        isDead = false;
+        gameObject.GetComponent<Collider>().enabled = true;
+        SetChildrenActive(true);
+    }
+
+    // Fonction utilitaire pour activer/désactiver tous les enfants
+    private void SetChildrenActive(bool state)
+    {
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(state);
+        }
+    }
+
     /// <summary>
-    /// Collecte les observations de l’environnement (non utilisé ici).
-    /// Peut être complété pour ajouter des raycasts ou distances.
+    /// Collecte les observations de l’environnement à partir de CustomRayPerception.
     /// </summary>
     /// <param name="sensor">Le capteur utilisé pour collecter les observations.</param>
     public override void CollectObservations(VectorSensor sensor)
     {
+        if (isDead)
+        {
+            sensor.AddObservation(new float[observationSize]);
+            return;
+        }
+
         // À compléter : distances aux proies, obstacles, raycasts, etc.
+        if (rayPerception != null)
+        {
+            float[] observations = rayPerception.GetObservations();
+            foreach (float val in observations)
+            {
+                sensor.AddObservation(val);
+            }
+        }
     }
 
     /// <summary>
@@ -71,7 +113,7 @@ public class HunterAgent02 : Agent
     /// <param name="actions">Actions continues : [rotation, avance].</param>
     public override void OnActionReceived(ActionBuffers actions)
     {
-        if (!active) return;
+        if (!active || isDead) return;
 
         float forward = Mathf.Clamp(actions.ContinuousActions[0], 0f, 1f);
         float rotation = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
@@ -89,6 +131,8 @@ public class HunterAgent02 : Agent
     /// <param name="collision">Collision détectée avec un autre objet.</param>
     private void OnCollisionEnter(Collision collision)
     {
+        if(isDead) return;
+
         if (collision.gameObject.CompareTag("Prey"))
         {
             // Récompense positive pour la capture
@@ -110,6 +154,8 @@ public class HunterAgent02 : Agent
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isDead) return;
+
         if (other.CompareTag("Danger")) 
         {
             AddReward(-1f);

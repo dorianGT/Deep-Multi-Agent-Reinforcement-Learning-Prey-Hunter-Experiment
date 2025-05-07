@@ -17,8 +17,8 @@ behaviors:
       vis_encode_type: simple
       # We add a RNN layers
       memory:
-      sequence_length: 64
-      memory_size: 256
+        sequence_length: 64
+        memory_size: 256
     reward_signals:
       extrinsic:
         gamma: 0.99
@@ -52,8 +52,8 @@ behaviors:
       vis_encode_type: simple
             # We add a RNN layers
       memory:
-      sequence_length: 64
-      memory_size: 256
+        sequence_length: 64
+        memory_size: 256
     reward_signals:
       extrinsic:
         gamma: 0.99
