@@ -175,7 +175,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2b9a1512e5e8b6946887be36e0334529, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: ba7b096bd347f844d85deda6e4a882d7, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Prey
@@ -209,6 +209,7 @@ MonoBehaviour:
   rayPerception: {fileID: 8704399113353869306}
   observationSize: 57
   enableCommunication: 0
+  agentId: 
 --- !u!114 &5745294328655271650
 MonoBehaviour:
   m_ObjectHideFlags: 0
