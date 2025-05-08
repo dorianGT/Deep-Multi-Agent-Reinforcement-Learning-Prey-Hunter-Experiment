@@ -1,0 +1,125 @@
+{
+    "Prey": {
+        "checkpoints": [
+            {
+                "steps": 1499853,
+                "file_path": "results\\HunterPreyPOCA.\\Prey\\Prey-1499853.onnx",
+                "reward": 0.3743317548862912,
+                "creation_time": 1746725218.3386364,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Prey\\Prey-1499853.pt"
+                ]
+            },
+            {
+                "steps": 1999922,
+                "file_path": "results\\HunterPreyPOCA.\\Prey\\Prey-1999922.onnx",
+                "reward": 0.5106145337443141,
+                "creation_time": 1746726524.312953,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Prey\\Prey-1999922.pt"
+                ]
+            },
+            {
+                "steps": 2499924,
+                "file_path": "results\\HunterPreyPOCA.\\Prey\\Prey-2499924.onnx",
+                "reward": 1.1577931385073397,
+                "creation_time": 1746728209.590549,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Prey\\Prey-2499924.pt"
+                ]
+            },
+            {
+                "steps": 2999861,
+                "file_path": "results\\HunterPreyPOCA.\\Prey\\Prey-2999861.onnx",
+                "reward": 1.0415444483847491,
+                "creation_time": 1746729617.2281575,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Prey\\Prey-2999861.pt"
+                ]
+            },
+            {
+                "steps": 3002757,
+                "file_path": "results\\HunterPreyPOCA.\\Prey\\Prey-3002757.onnx",
+                "reward": 0.90307159597675,
+                "creation_time": 1746729979.793754,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Prey\\Prey-3002757.pt"
+                ]
+            }
+        ],
+        "elo": 1062.9097089957145,
+        "final_checkpoint": {
+            "steps": 3002757,
+            "file_path": "results\\HunterPreyPOCA.\\Prey.onnx",
+            "reward": 0.90307159597675,
+            "creation_time": 1746729979.793754,
+            "auxillary_file_paths": [
+                "results\\HunterPreyPOCA.\\Prey\\Prey-3002757.pt"
+            ]
+        }
+    },
+    "Hunter": {
+        "checkpoints": [
+            {
+                "steps": 1499858,
+                "file_path": "results\\HunterPreyPOCA.\\Hunter\\Hunter-1499858.onnx",
+                "reward": 0.4179104464267617,
+                "creation_time": 1746725512.711304,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Hunter\\Hunter-1499858.pt"
+                ]
+            },
+            {
+                "steps": 1999832,
+                "file_path": "results\\HunterPreyPOCA.\\Hunter\\Hunter-1999832.onnx",
+                "reward": 0.5173912997479024,
+                "creation_time": 1746726840.4518907,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Hunter\\Hunter-1999832.pt"
+                ]
+            },
+            {
+                "steps": 2499912,
+                "file_path": "results\\HunterPreyPOCA.\\Hunter\\Hunter-2499912.onnx",
+                "reward": 0.7691056906450086,
+                "creation_time": 1746728516.7840836,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Hunter\\Hunter-2499912.pt"
+                ]
+            },
+            {
+                "steps": 2999925,
+                "file_path": "results\\HunterPreyPOCA.\\Hunter\\Hunter-2999925.onnx",
+                "reward": 0.3157894768212971,
+                "creation_time": 1746729977.4708867,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Hunter\\Hunter-2999925.pt"
+                ]
+            },
+            {
+                "steps": 3000984,
+                "file_path": "results\\HunterPreyPOCA.\\Hunter\\Hunter-3000984.onnx",
+                "reward": 0.32307692617177963,
+                "creation_time": 1746729980.1437511,
+                "auxillary_file_paths": [
+                    "results\\HunterPreyPOCA.\\Hunter\\Hunter-3000984.pt"
+                ]
+            }
+        ],
+        "elo": 1484.7573314823344,
+        "final_checkpoint": {
+            "steps": 3000984,
+            "file_path": "results\\HunterPreyPOCA.\\Hunter.onnx",
+            "reward": 0.32307692617177963,
+            "creation_time": 1746729980.1437511,
+            "auxillary_file_paths": [
+                "results\\HunterPreyPOCA.\\Hunter\\Hunter-3000984.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}
