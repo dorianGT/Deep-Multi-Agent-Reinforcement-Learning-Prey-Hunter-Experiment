@@ -99,7 +99,7 @@ public class PreyAgent02 : Agent
 
         if (rayPerception != null)
         {
-            float[][] obs = rayPerception.GetObservations();
+            float[][] obs = rayPerception.GetObservations("EnergyPrey");
             CommunicationBuffer.Message message = new CommunicationBuffer.Message
             {
                 rayResults = obs[1],

@@ -112,13 +112,13 @@ public class CustomRayPerception : MonoBehaviour
     }
 
 
-    public float[][] GetObservations()
+    public float[][] GetObservations(string tag)
     {
         List<RayResult> tmp = PerformRaycasts();
         return new float[][]
         {
         GetObservationFromRayResults(tmp, detectableTags),
-        GetObservationPreyOnly(tmp)
+        GetObservationOnly(tmp,tag)
         };
     }
 
@@ -151,7 +151,7 @@ public class CustomRayPerception : MonoBehaviour
         return directions;
     }
 
-    private float[] GetObservationPreyOnly(List<RayResult> rayResults)
+    private float[] GetObservationOnly(List<RayResult> rayResults, string tag)
     {
         int observationSize = rayResults.Count * 2;
         float[] observation = new float[observationSize];
@@ -162,7 +162,7 @@ public class CustomRayPerception : MonoBehaviour
             int baseIndex = i * 2;
 
             // 1 si la cible est une proie, sinon 0
-            observation[baseIndex] = (result.tag == "Prey") ? 1f : 0f;
+            observation[baseIndex] = (result.tag == tag) ? 1f : 0f;
 
             // distance normalisée
             observation[baseIndex + 1] = result.normalizedDistance;
