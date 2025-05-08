@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
@@ -66,9 +67,15 @@ public class HunterAgent02 : Agent
 
     public string agentId;
 
+    private List<string> tagToCommunicate;
     public override void Initialize()
     {
         agentId = System.Guid.NewGuid().ToString().Substring(0, 8); // ex: "a3f2c0d1"
+        tagToCommunicate = new List<string>
+        {
+            "Prey",
+            "EnergyPrey"
+        };
     }
 
     public void SetAgentDead()
@@ -100,51 +107,74 @@ public class HunterAgent02 : Agent
     /// <param name="sensor">Le capteur utilisé pour collecter les observations.</param>
     public override void CollectObservations(VectorSensor sensor)
     {
+        int observationCount = 0;
+
         if (isDead)
         {
             sensor.AddObservation(new float[observationSize]);
+            observationCount += observationSize;
+            // Debug.Log("Observation count: " + observationCount);
             return;
         }
 
-
         if (rayPerception != null)
         {
-            float[][] obs = rayPerception.GetObservations("Prey");
-            CommunicationBuffer.Message message = new CommunicationBuffer.Message
+            float[][] obs = rayPerception.GetObservations(tagToCommunicate);
+
+            if (enableCommunication)
             {
-                rayResults = obs[1],
-                localPosition = transform.localPosition
-            };
-            env.commBuffer.SendMessageInfo(agentId, message,true);
+                CommunicationBuffer.Message message = new CommunicationBuffer.Message
+                {
+                    rayResults = obs[1],
+                    localPosition = transform.localPosition
+                };
+                env.commBuffer.SendMessageInfo(agentId, message, true);
+            }
+
             foreach (float val in obs[0])
             {
                 sensor.AddObservation(val);
+                observationCount++;
             }
         }
 
         if (enableCommunication)
         {
             sensor.AddObservation(transform.localPosition);
-            int tmp2 = 0;
+            observationCount += 3;
+
             var messages = env.commBuffer.GetAllMessages(true);
             foreach (var entry in messages)
             {
-                if (entry.Key != agentId) // Ignorer soi-même
+                if (entry.Key != agentId)
                 {
-                    tmp2++;
                     sensor.AddObservation(entry.Value.localPosition);
+                    observationCount += 3;
+
                     foreach (var r in entry.Value.rayResults)
                     {
                         sensor.AddObservation(r);
+                        observationCount++;
                     }
                 }
             }
-            if (tmp2 != env.hunterCount-1)
-            {
-                sensor.AddObservation(new float[(env.hunterCount-1-tmp2)*17]);
-            }
+        }
+
+        //Debug.Log("Total observations: " + observationCount);
+
+        if (observationSize > observationCount)
+        {
+            int paddingSize = observationSize - observationCount;
+            float[] padding = new float[paddingSize];
+            sensor.AddObservation(padding);
+            //Debug.LogWarning("Padding applied: " + paddingSize + " zeros.");
+        }
+        else if (observationSize < observationCount)
+        {
+            Debug.LogError("Too many observations! Expected: " + observationSize + ", Got: " + observationCount);
         }
     }
+
 
     /// <summary>
     /// Applique les actions reçues par le modèle ML.

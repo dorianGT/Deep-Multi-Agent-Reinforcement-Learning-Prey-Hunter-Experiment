@@ -112,16 +112,15 @@ public class CustomRayPerception : MonoBehaviour
     }
 
 
-    public float[][] GetObservations(string tag)
+    public float[][] GetObservations(List<string> tags)
     {
         List<RayResult> tmp = PerformRaycasts();
         return new float[][]
         {
         GetObservationFromRayResults(tmp, detectableTags),
-        GetObservationOnly(tmp,tag)
+        GetObservationOnly(tmp, tags)
         };
     }
-
 
     private List<Vector3> GenerateRayDirections()
     {
@@ -151,25 +150,30 @@ public class CustomRayPerception : MonoBehaviour
         return directions;
     }
 
-    private float[] GetObservationOnly(List<RayResult> rayResults, string tag)
+    private float[] GetObservationOnly(List<RayResult> rayResults, List<string> tagCategories)
     {
-        int observationSize = rayResults.Count * 2;
+        int tagCount = tagCategories.Count;
+        int observationSize = rayResults.Count * (tagCount + 1); // +1 for distance
         float[] observation = new float[observationSize];
 
         for (int i = 0; i < rayResults.Count; i++)
         {
             RayResult result = rayResults[i];
-            int baseIndex = i * 2;
+            int baseIndex = i * (tagCount + 1);
 
-            // 1 si la cible est une proie, sinon 0
-            observation[baseIndex] = (result.tag == tag) ? 1f : 0f;
+            // One-hot encoding
+            for (int j = 0; j < tagCount; j++)
+            {
+                observation[baseIndex + j] = (result.tag == tagCategories[j]) ? 1f : 0f;
+            }
 
-            // distance normalisée
-            observation[baseIndex + 1] = result.normalizedDistance;
+            // Normalized distance
+            observation[baseIndex + tagCount] = result.normalizedDistance;
         }
 
         return observation;
     }
+
 
 
 

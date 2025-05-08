@@ -1,3 +1,4 @@
+ï»¿using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
@@ -5,56 +6,61 @@ using UnityEngine;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
 /// <summary>
-/// Agent représentant une proie dans l’environnement.
-/// Se déplace pour échapper aux chasseurs et maximise sa survie.
+/// Agent reprÃ©sentant une proie dans lâ€™environnement.
+/// Se dÃ©place pour Ã©chapper aux chasseurs et maximise sa survie.
 /// </summary>
 public class PreyAgent02 : Agent
 {
     /// <summary>
-    /// Vitesse de déplacement vers l’avant.
+    /// Vitesse de dÃ©placement vers lâ€™avant.
     /// </summary>
     public float moveSpeed = 3f;
 
     /// <summary>
-    /// Vitesse de rotation autour de l’axe Y.
+    /// Vitesse de rotation autour de lâ€™axe Y.
     /// </summary>
     public float rotationSpeed = 200f;
 
     private float energy;
     public float minEnergy = 5;
     public float maxEnergy = 15f;
-    public float energyDecayRate = 1f; // énergie perdue par seconde
-    public float energyGainAmount = 5f; // énergie gagnée en touchant une EnergyPrey
+    public float energyDecayRate = 1f; // Ã©nergie perdue par seconde
+    public float energyGainAmount = 5f; // Ã©nergie gagnÃ©e en touchant une EnergyPrey
 
     public CustomRayPerception rayPerception;
     public int observationSize = 56;
     public bool enableCommunication = true;
 
     /// <summary>
-    /// Référence vers l’environnement global.
+    /// RÃ©fÃ©rence vers lâ€™environnement global.
     /// </summary>
     private HunterPreyEnv02 env;
 
     /// <summary>
-    /// Associe l’environnement à cet agent.
+    /// Associe lâ€™environnement Ã  cet agent.
     /// </summary>
-    /// <param name="e">L’environnement principal HunterPreyEnv.</param>
+    /// <param name="e">Lâ€™environnement principal HunterPreyEnv.</param>
     public void SetEnv(HunterPreyEnv02 e) => env = e;
 
     public string agentId;
-
+    private List<string> tagToCommunicate;
     public override void Initialize()
     {
         agentId = System.Guid.NewGuid().ToString().Substring(0, 8); // ex: "a3f2c0d1"
+        tagToCommunicate = new List<string>
+        {
+            "Hunter",
+            "EnergyPrey"
+        };
     }
 
     /// <summary>
-    /// Réinitialisation de l’agent au début d’un épisode.
+    /// RÃ©initialisation de lâ€™agent au dÃ©but dâ€™un Ã©pisode.
     /// </summary>
     public override void OnEpisodeBegin()
     {
         energy = Random.Range(minEnergy, maxEnergy);
-        // Peut être complété si besoin : repositionner, reset timer, etc.
+        // Peut Ãªtre complÃ©tÃ© si besoin : repositionner, reset timer, etc.
     }
 
     private bool isDead = false; // Indique si l'agent est "mort"
@@ -73,7 +79,7 @@ public class PreyAgent02 : Agent
         SetChildrenActive(true);
     }
 
-    // Fonction utilitaire pour activer/désactiver tous les enfants
+    // Fonction utilitaire pour activer/dÃ©sactiver tous les enfants
     private void SetChildrenActive(bool state)
     {
         foreach (Transform child in transform)
@@ -83,63 +89,88 @@ public class PreyAgent02 : Agent
     }
 
     /// <summary>
-    /// Collecte les observations de l’environnement (à compléter).
-    /// Permet à l’agent de percevoir les éléments autour.
+    /// Collecte les observations de lâ€™environnement (Ã  complÃ©ter).
+    /// Permet Ã  lâ€™agent de percevoir les Ã©lÃ©ments autour.
     /// </summary>
-    /// <param name="sensor">Le capteur d’observations.</param>
+    /// <param name="sensor">Le capteur dâ€™observations.</param>
     public override void CollectObservations(VectorSensor sensor)
     {
+        int observationCount = 0;
+
         if (isDead)
         {
             sensor.AddObservation(new float[observationSize]);
+            observationCount += observationSize;
+            // Debug.Log("Observation count: " + observationCount);
             return;
         }
 
-        sensor.AddObservation(energy / maxEnergy); // Normalisé entre 0 et 1
+        sensor.AddObservation(energy / maxEnergy); // NormalisÃ© entre 0 et 1
+        observationCount++;
 
         if (rayPerception != null)
         {
-            float[][] obs = rayPerception.GetObservations("EnergyPrey");
-            CommunicationBuffer.Message message = new CommunicationBuffer.Message
+            float[][] obs = rayPerception.GetObservations(tagToCommunicate);
+
+            if (enableCommunication)
             {
-                rayResults = obs[1],
-                localPosition = transform.localPosition
-            };
-            env.commBuffer.SendMessageInfo(agentId, message, false);
+                CommunicationBuffer.Message message = new CommunicationBuffer.Message
+                {
+                    rayResults = obs[1],
+                    localPosition = transform.localPosition
+                };
+                env.commBuffer.SendMessageInfo(agentId, message, false);
+            }
+
             foreach (float val in obs[0])
             {
                 sensor.AddObservation(val);
+                observationCount++;
             }
         }
 
         if (enableCommunication)
         {
             sensor.AddObservation(transform.localPosition);
-            int tmp2 = 0;
+            observationCount += 3;
+
             var messages = env.commBuffer.GetAllMessages(false);
             foreach (var entry in messages)
             {
-                if (entry.Key != agentId) // Ignorer soi-même
+                if (entry.Key != agentId)
                 {
-                    tmp2++;
                     sensor.AddObservation(entry.Value.localPosition);
+                    observationCount += 3;
+
                     foreach (var r in entry.Value.rayResults)
                     {
                         sensor.AddObservation(r);
+                        observationCount++;
                     }
                 }
             }
-            if (tmp2 != env.preyCount - 1)
-            {
-                sensor.AddObservation(new float[(env.preyCount - tmp2-1) * 17]);
-            }
+        }
+
+        //Debug.Log("Total observations: " + observationCount);
+
+        if (observationSize > observationCount)
+        {
+            int paddingSize = observationSize - observationCount;
+            float[] padding = new float[paddingSize];
+            sensor.AddObservation(padding);
+            //Debug.LogWarning("Padding applied: " + paddingSize + " zeros.");
+        }
+        else if (observationSize < observationCount)
+        {
+            Debug.LogError("Too many observations! Expected: " + observationSize + ", Got: " + observationCount);
         }
     }
 
+
     /// <summary>
-    /// Reçoit et applique les actions continues.
+    /// ReÃ§oit et applique les actions continues.
     /// La proie peut tourner et avancer.
-    /// Une petite récompense est donnée à chaque frame pour survivre plus longtemps.
+    /// Une petite rÃ©compense est donnÃ©e Ã  chaque frame pour survivre plus longtemps.
     /// </summary>
     /// <param name="actions">Actions continues : [rotation, mouvement].</param>
     public override void OnActionReceived(ActionBuffers actions)
@@ -155,17 +186,17 @@ public class PreyAgent02 : Agent
         // Appliquer l'avance
         transform.position += transform.forward * forward * moveSpeed * Time.deltaTime;
 
-        // Récompense pour avoir survécu un pas de temps
+        // RÃ©compense pour avoir survÃ©cu un pas de temps
         AddReward(0.0001f);
 
-        // Diminution de l'énergie
+        // Diminution de l'Ã©nergie
         energy -= energyDecayRate * Time.deltaTime;
 
-        // Punition si l'énergie tombe à zéro
+        // Punition si l'Ã©nergie tombe Ã  zÃ©ro
         if (energy <= 0f)
         {
-            SetReward(-1f); // ou une récompense personnalisée
-            env.OnPreyEnergyDepleted(this); // à implémenter dans l’environnement
+            SetReward(-1f); // ou une rÃ©compense personnalisÃ©e
+            env.OnPreyEnergyDepleted(this); // Ã  implÃ©menter dans lâ€™environnement
         }
     }
 

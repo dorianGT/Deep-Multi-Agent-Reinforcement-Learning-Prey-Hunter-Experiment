@@ -28,7 +28,7 @@ public class CommunicationBuffer : MonoBehaviour
             countHunter++;
         }
         else
-        {
+        {        
             messageBufferPrey[agentId] = message;
             countPrey++;
         }
