@@ -236,5 +236,10 @@ public class HunterAgentFinal : Agent
             AddReward(-1f);
             env.OnHunterEnterDanger(this);
         }
+        if (other.CompareTag("SpeedBoost") || other.CompareTag("Camouflage"))
+        {
+            AddReward(0.2f); // petite récompense stratégique
+            env.OnBonusDestroyed(other.gameObject);
+        }
     }
 }

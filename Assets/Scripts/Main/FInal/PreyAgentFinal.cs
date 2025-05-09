@@ -28,6 +28,7 @@ public class PreyAgentFinal : Agent
     public float energyGainAmount = 5f; // énergie gagnée en touchant une EnergyPrey
 
     public CustomRayPerception rayPerception;
+    public CustomRayPerception rayPerceptionBack;
     public int observationSize = 56;
     public bool enableCommunication = true;
 
@@ -179,6 +180,13 @@ public class PreyAgentFinal : Agent
                 sensor.AddObservation(val);
                 observationCount++;
             }
+
+            obs = rayPerceptionBack.GetObservations(tagToCommunicate);
+            foreach (float val in obs[0])
+            {
+                sensor.AddObservation(val);
+                observationCount++;
+            }
         }
 
         if (enableCommunication)
@@ -280,7 +288,7 @@ public class PreyAgentFinal : Agent
         else if (other.CompareTag("EnergyPrey"))
         {
             energy = Mathf.Min(energy + energyGainAmount, maxEnergy);
-            AddReward(1f);
+            AddReward(0.5f);
             env.OnPreyEnergy(other.gameObject);
         }
         else if (other.CompareTag("SpeedBoost"))

@@ -30,6 +30,10 @@ public class HunterPreyEnvFinal : MonoBehaviour
     public int speedBoostCount = 2;
     public int camouflageCount = 2;
 
+    public float delayEnergyRespawn = 5;
+    public float delaySpeedBonusRespawn = 7;
+    public float delayCamouflageRespawn = 8;
+
     private List<GameObject> speedBoostList;
     private List<GameObject> camouflageList;
 
@@ -58,6 +62,7 @@ public class HunterPreyEnvFinal : MonoBehaviour
 
     void Start()
     {
+        commBuffer.SetCount(hunterCount, preyCount);
         roomGenerator.Generate();
         SpawnAgents();
         Invoke(nameof(ReleaseHunters), hidingTime);
@@ -200,7 +205,7 @@ public class HunterPreyEnvFinal : MonoBehaviour
     {
         if (energyList.Contains(energyObj))
         {
-            StartCoroutine(RespawnBonus(energyObj, 5f));
+            StartCoroutine(RespawnBonus(energyObj, delayEnergyRespawn));
         }
     }
 
@@ -208,14 +213,14 @@ public class HunterPreyEnvFinal : MonoBehaviour
     {
         if (speedBoostList.Contains(obj))
         {
-            StartCoroutine(RespawnBonus(obj,7));
+            StartCoroutine(RespawnBonus(obj,delaySpeedBonusRespawn));
         }
     }
     public void OnCamouflageCollected(GameObject obj)
     {
         if (camouflageList.Contains(obj))
         {
-            StartCoroutine(RespawnBonus(obj,8));
+            StartCoroutine(RespawnBonus(obj,delayCamouflageRespawn));
         }
     }
 
@@ -274,6 +279,20 @@ public class HunterPreyEnvFinal : MonoBehaviour
 
             CheckEndedGame();
         }
+    }
+
+    public void OnBonusDestroyed(GameObject bonus)
+    {
+        if (speedBoostList.Contains(bonus))
+        {
+            StartCoroutine(RespawnBonus(bonus, delaySpeedBonusRespawn));
+        }
+        else if (camouflageList.Contains(bonus))
+        {
+            StartCoroutine(RespawnBonus(bonus, delayCamouflageRespawn));
+        }
+
+        bonus.SetActive(false); // destruction visuelle immédiate
     }
 
     void CheckEndedGame()

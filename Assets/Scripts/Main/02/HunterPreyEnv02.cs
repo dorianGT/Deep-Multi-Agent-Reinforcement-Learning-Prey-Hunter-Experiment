@@ -49,6 +49,7 @@ public class HunterPreyEnv02 : MonoBehaviour
 
     void Start()
     {
+        commBuffer.SetCount(hunterCount, preyCount);
         roomGenerator.Generate();
         SpawnAgents();
         Invoke(nameof(ReleaseHunters), hidingTime);

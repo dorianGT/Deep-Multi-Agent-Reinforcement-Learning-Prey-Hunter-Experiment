@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class CommunicationBuffer : MonoBehaviour
 {
-    public HunterPreyEnv02 env;
-
     public struct Message
     {
         public float[] rayResults;
@@ -17,8 +15,17 @@ public class CommunicationBuffer : MonoBehaviour
     private Dictionary<string, Message> messageBufferPrey = new Dictionary<string, Message>();
     private Dictionary<string, Message> previousMessagesPrey = new Dictionary<string, Message>();
 
+    private int countPreyMax;
+    private int countHunterMax;
+
     private int countHunter = 0;
     private int countPrey = 0;
+
+    public void SetCount(int countHunter, int countPrey)
+    {
+        countHunterMax = countHunter;
+        countPreyMax = countPrey;
+    }
 
     public void SendMessageInfo(string agentId, Message message, bool isHunter)
     {
@@ -38,12 +45,12 @@ public class CommunicationBuffer : MonoBehaviour
 
     private void CheckNewMessage()
     {
-        if (countHunter == env.hunterCount)
+        if (countHunter == countHunterMax)
         {
             UpdateMessages(true);
         }
 
-        if (countPrey == env.preyCount)
+        if (countPrey == countPreyMax)
         {
             UpdateMessages(false);
         }
