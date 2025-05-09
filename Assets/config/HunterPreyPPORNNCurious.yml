@@ -28,7 +28,7 @@ behaviors:
         strength: 0.02
         encoding_size: 128
     keep_checkpoints: 5
-    max_steps: 30000000
+    max_steps: 3000000
     time_horizon: 1000
     summary_freq: 10000
     self_play:
@@ -67,7 +67,7 @@ behaviors:
         strength: 0.02
         encoding_size: 128
     keep_checkpoints: 5
-    max_steps: 30000000
+    max_steps: 3000000
     time_horizon: 1000
     summary_freq: 10000
     self_play:

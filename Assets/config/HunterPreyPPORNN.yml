@@ -23,7 +23,7 @@ behaviors:
         gamma: 0.99
         strength: 1.0
     keep_checkpoints: 5
-    max_steps: 30000000
+    max_steps: 3000000
     time_horizon: 1000
     summary_freq: 10000
     # Remove or adjust self_play parameters if needed,
@@ -60,7 +60,7 @@ behaviors:
         gamma: 0.99
         strength: 1.0
     keep_checkpoints: 5
-    max_steps: 30000000
+    max_steps: 3000000
     time_horizon: 1000
     summary_freq: 10000
     self_play:
