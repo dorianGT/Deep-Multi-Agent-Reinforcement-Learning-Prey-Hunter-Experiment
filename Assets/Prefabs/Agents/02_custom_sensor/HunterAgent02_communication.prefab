@@ -394,7 +394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 76
+    VectorObservationSize: 107
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -403,7 +403,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: fdf9f6687b1cda742bd67172b9c0e3fd, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Hunter
@@ -431,7 +431,7 @@ MonoBehaviour:
   moveSpeed: 15
   rotationSpeed: 400
   rayPerception: {fileID: 3429217791394262599}
-  observationSize: 76
+  observationSize: 107
   enableCommunication: 1
   agentId: 
 --- !u!114 &2242271266627093089

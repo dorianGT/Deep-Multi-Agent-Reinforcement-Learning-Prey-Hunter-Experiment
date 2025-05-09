@@ -175,7 +175,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: ba7b096bd347f844d85deda6e4a882d7, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: e9918aae754364d4eabafaa81632e89b, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Prey
