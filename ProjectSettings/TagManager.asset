@@ -13,6 +13,9 @@ TagManager:
   - FxTemporaire
   - Danger
   - EnergyPrey
+  - InvisiblePrey
+  - SpeedBoost
+  - Camouflage
   layers:
   - Default
   - TransparentFX
