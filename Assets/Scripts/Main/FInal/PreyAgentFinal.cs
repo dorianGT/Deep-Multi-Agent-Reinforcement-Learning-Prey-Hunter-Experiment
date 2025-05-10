@@ -83,6 +83,7 @@ public class PreyAgentFinal : Agent
     /// </summary>
     public override void OnEpisodeBegin()
     {
+        gameObject.tag = "Prey";
         isInvisible = false;
         isSpeedBoosted = false;
         moveSpeed = baseMoveSpeed;

@@ -2,118 +2,118 @@
     "Prey": {
         "checkpoints": [
             {
-                "steps": 1499868,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-1499868.onnx",
-                "reward": 0.6892550916921708,
-                "creation_time": 1746819369.0170734,
+                "steps": 9499815,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-9499815.onnx",
+                "reward": 0.6564224552777078,
+                "creation_time": 1746886015.2397425,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-1499868.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-9499815.pt"
                 ]
             },
             {
-                "steps": 1999923,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-1999923.onnx",
-                "reward": 0.6364774698260844,
-                "creation_time": 1746821053.1967762,
+                "steps": 9999892,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-9999892.onnx",
+                "reward": 0.8219687419110223,
+                "creation_time": 1746887385.4897962,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-1999923.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-9999892.pt"
                 ]
             },
             {
-                "steps": 2499894,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-2499894.onnx",
-                "reward": 0.6400526850370736,
-                "creation_time": 1746823911.2990654,
+                "steps": 10499997,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-10499997.onnx",
+                "reward": 0.3155700686094287,
+                "creation_time": 1746889103.369833,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-2499894.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-10499997.pt"
                 ]
             },
             {
-                "steps": 2999767,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-2999767.onnx",
-                "reward": 0.5766844808271057,
-                "creation_time": 1746825307.346332,
+                "steps": 10999932,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-10999932.onnx",
+                "reward": 1.0752185346050696,
+                "creation_time": 1746890481.2781923,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-2999767.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-10999932.pt"
                 ]
             },
             {
-                "steps": 3013356,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-3013356.onnx",
-                "reward": null,
-                "creation_time": 1746825674.581245,
+                "steps": 11442049,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-11442049.onnx",
+                "reward": 0.34356681319574517,
+                "creation_time": 1746892117.6293392,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-3013356.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-11442049.pt"
                 ]
             }
         ],
-        "elo": 1304.055590932137,
+        "elo": 1274.386085930573,
         "final_checkpoint": {
-            "steps": 3013356,
+            "steps": 11442049,
             "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Prey.onnx",
-            "reward": null,
-            "creation_time": 1746825674.581245,
+            "reward": 0.34356681319574517,
+            "creation_time": 1746892117.6293392,
             "auxillary_file_paths": [
-                "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-3013356.pt"
+                "results\\HunterPreyPOCARNNCommunication_final.\\Prey\\Prey-11442049.pt"
             ]
         }
     },
     "Hunter": {
         "checkpoints": [
             {
-                "steps": 1499938,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-1499938.onnx",
-                "reward": 0.36666667088866234,
-                "creation_time": 1746819731.64965,
+                "steps": 9499975,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-9499975.onnx",
+                "reward": 0.9037037122028845,
+                "creation_time": 1746886335.613309,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-1499938.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-9499975.pt"
                 ]
             },
             {
-                "steps": 1999731,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-1999731.onnx",
-                "reward": 0.6744186133146286,
-                "creation_time": 1746821490.6458716,
+                "steps": 9999805,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-9999805.onnx",
+                "reward": 0.6974359112672317,
+                "creation_time": 1746887736.8329515,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-1999731.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-9999805.pt"
                 ]
             },
             {
-                "steps": 2499882,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-2499882.onnx",
-                "reward": 0.46956522179686505,
-                "creation_time": 1746824230.5270262,
+                "steps": 10499724,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-10499724.onnx",
+                "reward": 0.6608695783044981,
+                "creation_time": 1746889425.5073771,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-2499882.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-10499724.pt"
                 ]
             },
             {
-                "steps": 2999949,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-2999949.onnx",
-                "reward": 0.6086956683708273,
-                "creation_time": 1746825653.5764973,
+                "steps": 10999910,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-10999910.onnx",
+                "reward": 1.7142857164144516,
+                "creation_time": 1746890831.7155478,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-2999949.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-10999910.pt"
                 ]
             },
             {
-                "steps": 3003894,
-                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-3003894.onnx",
-                "reward": 0.6285714421953473,
-                "creation_time": 1746825675.0294054,
+                "steps": 11413202,
+                "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-11413202.onnx",
+                "reward": 0.9384615518725835,
+                "creation_time": 1746892118.0410523,
                 "auxillary_file_paths": [
-                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-3003894.pt"
+                    "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-11413202.pt"
                 ]
             }
         ],
-        "elo": 1462.8403866914757,
+        "elo": 1566.7142419070321,
         "final_checkpoint": {
-            "steps": 3003894,
+            "steps": 11413202,
             "file_path": "results\\HunterPreyPOCARNNCommunication_final.\\Hunter.onnx",
-            "reward": 0.6285714421953473,
-            "creation_time": 1746825675.0294054,
+            "reward": 0.9384615518725835,
+            "creation_time": 1746892118.0410523,
             "auxillary_file_paths": [
-                "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-3003894.pt"
+                "results\\HunterPreyPOCARNNCommunication_final.\\Hunter\\Hunter-11413202.pt"
             ]
         }
     },
