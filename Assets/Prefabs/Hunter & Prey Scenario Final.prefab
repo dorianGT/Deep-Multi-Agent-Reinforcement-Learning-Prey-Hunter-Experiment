@@ -143,9 +143,12 @@ MonoBehaviour:
   hunterCount: 2
   preyCount: 3
   timeLimit: 30
-  energyPreyCount: 5
-  speedBoostCount: 2
-  camouflageCount: 2
+  energyPreyCount: 0
+  speedBoostCount: 0
+  camouflageCount: 0
+  delayEnergyRespawn: 5
+  delaySpeedBonusRespawn: 7
+  delayCamouflageRespawn: 8
   roomGenerator: {fileID: 2967499194119040639}
   gameUI: {fileID: 0}
   commBuffer: {fileID: 4032726024688509191}
@@ -187,28 +190,28 @@ MonoBehaviour:
   debug: 0
   objectPrefabs:
   - prefab: {fileID: 381255459847991170, guid: e2287d625f5034a4293e0ed1f56d3167, type: 3}
-    probability: 0.05
+    probability: 0
     debugColor: {r: 0.7372549, g: 0.69616616, b: 0.22745095, a: 1}
     widthInCells: 2
     heightInCells: 1
     placementConstraint: 2
     allowRandomRotation: 1
   - prefab: {fileID: 4377933626515690895, guid: a1834b6441f5f964186d094e8fd881e5, type: 3}
-    probability: 0.1
+    probability: 0
     debugColor: {r: 0.22745095, g: 0.28072512, b: 0.7372549, a: 1}
     widthInCells: 1
     heightInCells: 1
     placementConstraint: 2
     allowRandomRotation: 0
   - prefab: {fileID: 2457609113767055918, guid: 1a8df9f93ed8a8c42b5757184abc38d8, type: 3}
-    probability: 0.05
+    probability: 0
     debugColor: {r: 0.46262014, g: 0.67373025, b: 0.8679245, a: 1}
     widthInCells: 1
     heightInCells: 1
     placementConstraint: 2
     allowRandomRotation: 0
   - prefab: {fileID: 2119083391933518298, guid: 43b8858a70ce9314c8c5716a758c1f4b, type: 3}
-    probability: 0.05
+    probability: 0
     debugColor: {r: 1, g: 0.0179291, b: 0, a: 1}
     widthInCells: 1
     heightInCells: 1

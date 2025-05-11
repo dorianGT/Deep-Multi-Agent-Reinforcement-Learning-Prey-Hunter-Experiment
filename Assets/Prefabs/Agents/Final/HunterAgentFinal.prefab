@@ -403,7 +403,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 96125cb19002b7445aaa61b5d60319e4, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8794d3e36b4959045b102cae05f05960, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Hunter
@@ -612,7 +612,7 @@ MonoBehaviour:
   raysPerDirection: 3
   maxRayDegrees: 65
   sphereCastRadius: 0.5
-  rayLength: 15
+  rayLength: 10
   rayLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295

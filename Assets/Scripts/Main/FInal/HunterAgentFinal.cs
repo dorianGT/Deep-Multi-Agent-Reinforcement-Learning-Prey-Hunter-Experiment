@@ -51,6 +51,7 @@ public class HunterAgentFinal : Agent
     public override void OnEpisodeBegin()
     {
         active = false; // Les chasseurs sont inactifs au début
+        lastPosition = transform.position;
     }
 
     /// <summary>
@@ -68,6 +69,9 @@ public class HunterAgentFinal : Agent
     public string agentId;
 
     private List<string> tagToCommunicate;
+
+    private Vector3 lastPosition;
+
     public override void Initialize()
     {
         agentId = System.Guid.NewGuid().ToString().Substring(0, 8); // ex: "a3f2c0d1"
@@ -198,6 +202,23 @@ public class HunterAgentFinal : Agent
 
         // Appliquer la translation vers l’avant
         transform.position += transform.forward * forward * moveSpeed * Time.deltaTime;
+
+        if(forward < 0.2f)
+        {
+            AddReward(-0.001f);
+        }
+        else
+        {
+            AddReward(0.001f);
+        }
+
+        float distanceMoved = Vector3.Distance(transform.position, lastPosition);
+        if (distanceMoved < 0.05f)
+        {
+            AddReward(-0.005f); // Pénalité si l'agent n'explore vraiment pas
+        }
+
+        lastPosition = transform.position;
     }
 
     /// <summary>

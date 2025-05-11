@@ -156,6 +156,7 @@ public class PreyAgentFinal : Agent
         }
         observationCount++;
 
+
         sensor.AddObservation(energy / maxEnergy); // Normalisé entre 0 et 1
         observationCount++;
 
@@ -248,7 +249,7 @@ public class PreyAgentFinal : Agent
         transform.position += transform.forward * forward * moveSpeed * Time.deltaTime;
 
         // Récompense pour avoir survécu un pas de temps
-        AddReward(0.0001f);
+        AddReward(0.005f);
 
         // Diminution de l'énergie
         energy -= energyDecayRate * Time.deltaTime;
@@ -256,8 +257,10 @@ public class PreyAgentFinal : Agent
         // Punition si l'énergie tombe à zéro
         if (energy <= 0f)
         {
-            SetReward(-1f); // ou une récompense personnalisée
-            env.OnPreyEnergyDepleted(this); // à implémenter dans l’environnement
+            //SetReward(-1f); // ou une récompense personnalisée
+            //env.OnPreyEnergyDepleted(this); // à implémenter dans l’environnement
+
+            AddReward(-0.01f);
         }
     }
 
@@ -273,7 +276,7 @@ public class PreyAgentFinal : Agent
 
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            AddReward(-0.2f);
+            AddReward(-0.1f);
         }
     }
 
@@ -289,19 +292,19 @@ public class PreyAgentFinal : Agent
         else if (other.CompareTag("EnergyPrey"))
         {
             energy = Mathf.Min(energy + energyGainAmount, maxEnergy);
-            AddReward(0.5f);
+            AddReward(0.1f);
             env.OnPreyEnergy(other.gameObject);
         }
         else if (other.CompareTag("SpeedBoost"))
         {
-            AddReward(0.5f);
+            AddReward(0.1f);
             env.OnSpeedBoostCollected(other.gameObject);
             if (speedBoostCoroutine != null) StopCoroutine(speedBoostCoroutine);
             speedBoostCoroutine = StartCoroutine(SpeedBoostRoutine());
         }
         else if (other.CompareTag("Camouflage"))
         {
-            AddReward(0.5f);
+            AddReward(0.1f);
             env.OnCamouflageCollected(other.gameObject);
             if (camouflageCoroutine != null) StopCoroutine(camouflageCoroutine);
             camouflageCoroutine = StartCoroutine(CamouflageRoutine());
