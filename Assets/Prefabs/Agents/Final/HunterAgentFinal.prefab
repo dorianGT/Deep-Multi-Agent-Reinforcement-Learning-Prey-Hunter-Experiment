@@ -403,9 +403,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 8794d3e36b4959045b102cae05f05960, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: c7ec278249939c94b9096598912f7666, type: 3}
   m_InferenceDevice: 2
-  m_BehaviorType: 0
+  m_BehaviorType: 2
   m_BehaviorName: Hunter
   TeamId: 0
   m_UseChildSensors: 1
@@ -429,7 +429,7 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   moveSpeed: 15
-  rotationSpeed: 400
+  rotationSpeed: 800
   rayPerception: {fileID: 3429217791394262599}
   observationSize: 112
   enableCommunication: 1
@@ -602,7 +602,6 @@ MonoBehaviour:
   detectableTags:
   - Wall
   - Prey
-  - Hunter
   - Danger
   - Obstacle
   - MovableObject

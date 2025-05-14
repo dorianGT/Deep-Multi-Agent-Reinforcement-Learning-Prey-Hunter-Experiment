@@ -16,6 +16,7 @@ TagManager:
   - InvisiblePrey
   - SpeedBoost
   - Camouflage
+  - LimitMap
   layers:
   - Default
   - TransparentFX

@@ -46,7 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectableTags:
   - Wall
-  - Prey
   - Hunter
   - Danger
   - Obstacle
@@ -54,9 +53,8 @@ MonoBehaviour:
   - EnergyPrey
   - Camouflage
   - SpeedBoost
-  - InvisiblePrey
-  raysPerDirection: 3
-  maxRayDegrees: 65
+  raysPerDirection: 8
+  maxRayDegrees: 180
   sphereCastRadius: 0.5
   rayLength: 15
   rayLayerMask:
@@ -170,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 162
+    VectorObservationSize: 336
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -179,7 +177,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: aea460e6ee548e64899f53f100823321, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 874dc7502d3e50041b56a6967ff1cc4a, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Prey
@@ -205,21 +203,21 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   moveSpeed: 16
-  rotationSpeed: 400
+  rotationSpeed: 800
   minEnergy: 10
   maxEnergy: 15
   energyDecayRate: 1
   energyGainAmount: 6.5
   rayPerception: {fileID: 8704399113353869306}
   rayPerceptionBack: {fileID: 7522602232744395383}
-  observationSize: 162
-  enableCommunication: 1
+  observationSize: 336
+  enableCommunication: 0
+  agentId: 
   boostedSpeed: 20
   boostDuration: 5
   camouflageDuration: 4
   agentRenderer: {fileID: 582600109697240638}
   camouflageMaterial: {fileID: 2100000, guid: 9612986fb6d59ea43ac511e969c109c8, type: 2}
-  agentId: 
 --- !u!114 &5745294328655271650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -701,7 +699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5255193012297024572
 Transform:
   m_ObjectHideFlags: 0
@@ -731,7 +729,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectableTags:
   - Hunter
-  raysPerDirection: 0
+  raysPerDirection: 3
   maxRayDegrees: 65
   sphereCastRadius: 0.5
   rayLength: 7

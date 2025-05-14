@@ -1,12 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Gère un système de pooling d'objets pour éviter les instantiations et destructions répétées.
+/// Fournit des méthodes pour obtenir et retourner des objets au pool.
+/// </summary>
 public class ObjectPool : MonoBehaviour
 {
 
     public static ObjectPool Instance { get; private set; }
 
 
+    /// <summary>
+    /// Représente un objet à instancier dans le pool avec un prefab et une taille initiale.
+    /// </summary>
     [System.Serializable]
     public class PoolItem
     {
@@ -14,12 +21,16 @@ public class ObjectPool : MonoBehaviour
         public int initialSize = 10;
     }
 
+
     public List<PoolItem> itemsToPool;
 
     private Dictionary<string, Queue<GameObject>> poolDictionary = new Dictionary<string, Queue<GameObject>>();
     private Dictionary<GameObject, string> reverseLookup = new Dictionary<GameObject, string>();
     private List<GameObject> activeObjects = new List<GameObject>();
 
+    /// <summary>
+    /// Initialise l'instance singleton et prépare les pools pour chaque prefab spécifié.
+    /// </summary>
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -48,6 +59,11 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Récupère un objet du pool correspondant au prefab donné, ou en instancie un nouveau si le pool est vide.
+    /// Positionne et active l'objet avant de le retourner.
+    /// </summary>
     public GameObject GetObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
     {
         string key = prefab.name;
@@ -80,6 +96,9 @@ public class ObjectPool : MonoBehaviour
         return obj;
     }
 
+    /// <summary>
+    /// Désactive et retourne un objet au pool dont il provient.
+    /// </summary>
     public void ReturnObject(GameObject obj)
     {
         if (obj == null) return;
@@ -95,6 +114,9 @@ public class ObjectPool : MonoBehaviour
         activeObjects.Remove(obj);
     }
 
+    /// <summary>
+    /// Retourne une liste d’objets au pool.
+    /// </summary>
     public void ReturnObjects(List<GameObject> objects)
     {
         foreach (var obj in objects)
@@ -103,13 +125,15 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Retourne tous les objets actifs au pool et les désactive.
+    /// </summary>
     public void ReturnAll()
     {
         foreach (GameObject obj in activeObjects)
         {
             obj.SetActive(false);
-            obj.transform.SetParent(transform); // Optionnel
+            obj.transform.SetParent(transform);
             if (reverseLookup.TryGetValue(obj, out string key))
             {
                 poolDictionary[key].Enqueue(obj);

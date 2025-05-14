@@ -126,7 +126,8 @@ public class HunterAgent02 : Agent
                 CommunicationBuffer.Message message = new CommunicationBuffer.Message
                 {
                     rayResults = obs[1],
-                    localPosition = transform.localPosition
+                    localPosition = transform.localPosition,
+                    rotation = transform.eulerAngles.y / 360f
                 };
                 env.commBuffer.SendMessageInfo(agentId, message, true);
             }
@@ -149,7 +150,8 @@ public class HunterAgent02 : Agent
                 if (entry.Key != agentId)
                 {
                     sensor.AddObservation(entry.Value.localPosition);
-                    observationCount += 3;
+                    sensor.AddObservation(entry.Value.rotation);
+                    observationCount += 4;
 
                     foreach (var r in entry.Value.rayResults)
                     {

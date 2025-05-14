@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using Unity.MLAgents;
 using System.Collections;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 /// <summary>
 /// Gère l'environnement de jeu pour un scénario de chasse entre chasseurs et proies.
-/// Contrôle l'apparition, la réinitialisation et le déroulement des épisodes.
+/// Contrôle l'apparition, les rewards de group, la réinitialisation et le déroulement des épisodes.
 /// </summary>
 public class HunterPreyEnvFinal : MonoBehaviour
 {
     #region Variables
+
+    // === [Header] Prefabs & Spawn ===
 
     [Header("Prefabs & Spawn")]
     public GameObject hunterPrefab;
@@ -21,44 +22,79 @@ public class HunterPreyEnvFinal : MonoBehaviour
     public GameObject speedBoostPrefab;
     public GameObject camouflagePrefab;
 
+    // === [Header] Paramètres de jeu ===
+
     [Header("Game Settings")]
     public int hunterCount = 2;
     public int preyCount = 3;
     public float timeLimit = 30f;
-    public int energyPreyCount = 3;
 
+    public int energyPreyCount = 3;
     public int speedBoostCount = 2;
     public int camouflageCount = 2;
 
-    public float delayEnergyRespawn = 5;
-    public float delaySpeedBonusRespawn = 7;
-    public float delayCamouflageRespawn = 8;
+    public float delayEnergyRespawn = 5f;
+    public float delaySpeedBonusRespawn = 7f;
+    public float delayCamouflageRespawn = 8f;
+
+    // === Gestion des objets de jeu ===
 
     private List<GameObject> speedBoostList;
     private List<GameObject> camouflageList;
+    private List<GameObject> energyList;
+
+    // === Générateur de niveau ===
 
     public RoomGenerator2D roomGenerator;
 
-    public InGameUI gameUI;
+    // === UI et communication ===
 
+    public InGameUI gameUI;
     public CommunicationBuffer commBuffer;
+
+    // === Gestion du temps et du jeu ===
 
     private float hidingTime = 5f;
     private bool huntersReleased = false;
+    private float timer;
+
+    // === Groupes d’agents ===
+
+    private SimpleMultiAgentGroup hunterAgentGroup;
+    private SimpleMultiAgentGroup preyAgentGroup;
+
+    // === Références aux agents ===
 
     private List<HunterAgentFinal> hunters;
     private List<PreyAgentFinal> preys;
     private List<HunterAgentFinal> disabledHunters;
     private List<PreyAgentFinal> disabledPreys;
 
-    private List<GameObject> energyList;
+    // === Statistiques ===
 
-    private float timer;
-
-    private SimpleMultiAgentGroup hunterAgentGroup;
-    private SimpleMultiAgentGroup preyAgentGroup;
+    private int preyKilledByHunter = 0;
 
     #endregion
+
+    #region Unity Func
+
+    /// <summary>
+    /// Recupere tous les chasseurs.
+    /// </summary>
+    /// <returns>Liste de HunterAgentFinal</returns>
+    public List<HunterAgentFinal>  GetAllHunters()
+    {
+        return hunters;
+    }
+
+    /// <summary>
+    /// Recupere toutes les proies.
+    /// </summary>
+    /// <returns>Liste de PreyAgentFinal</returns>
+    public List<PreyAgentFinal> GetAllPreys()
+    {
+        return preys;
+    }
 
     void Start()
     {
@@ -77,10 +113,27 @@ public class HunterPreyEnvFinal : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Recupere le temps actuel normalisé entre 0 et 1.
+    /// </summary>
+    /// <returns>Le temps actuel</returns>
     public float GetTimeFloat()
     {
         return (timeLimit - timer) / timeLimit;
     }
+
+    private void FixedUpdate()
+    {
+        preyAgentGroup.AddGroupReward(0.001f * GetTimeFloat());
+        if (huntersReleased)
+        {
+            hunterAgentGroup.AddGroupReward(-0.001f * GetTimeFloat());
+        }
+    }
+
+    #endregion
+
+    #region Spawn & Rest
 
     /// <summary>
     /// Instancie les agents chasseurs et proies et les enregistre dans leurs groupes respectifs.
@@ -181,120 +234,8 @@ public class HunterPreyEnvFinal : MonoBehaviour
     }
 
     /// <summary>
-    /// Appelée lorsqu'une proie est attrapée par un chasseur.
+    /// Vérifie si la partie est finie.
     /// </summary>
-    /// <param name="prey">La proie attrapée (GameObject)</param>
-    public void OnPreyCaught(GameObject prey)
-    {
-        PreyAgentFinal preyAgent = prey.GetComponent<PreyAgentFinal>();
-
-        if (preys.Contains(preyAgent))
-        {
-            ObjectPool.Instance.GetObject(diePrefabPrey, prey.transform.position, Quaternion.identity);
-
-            preyAgent.SetAgentDead();
-
-            preys.Remove(preyAgent);
-            disabledPreys.Add(preyAgent);
-
-            CheckEndedGame();
-        }      
-    }
-
-    public void OnPreyEnergy(GameObject energyObj)
-    {
-        if (energyList.Contains(energyObj))
-        {
-            StartCoroutine(RespawnBonus(energyObj, delayEnergyRespawn));
-        }
-    }
-
-    public void OnSpeedBoostCollected(GameObject obj)
-    {
-        if (speedBoostList.Contains(obj))
-        {
-            StartCoroutine(RespawnBonus(obj,delaySpeedBonusRespawn));
-        }
-    }
-    public void OnCamouflageCollected(GameObject obj)
-    {
-        if (camouflageList.Contains(obj))
-        {
-            StartCoroutine(RespawnBonus(obj,delayCamouflageRespawn));
-        }
-    }
-
-    private IEnumerator RespawnBonus(GameObject obj, float delay)
-    {
-        obj.SetActive(false);
-        yield return new WaitForSeconds(delay);
-        obj.SetActive(true);
-    }
-
-
-
-    public void OnPreyEnergyDepleted(PreyAgentFinal preyAgent)
-    {
-        if (preys.Contains(preyAgent))
-        {
-            ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
-
-            preyAgent.SetAgentDead();
-
-            preys.Remove(preyAgent);
-            disabledPreys.Add(preyAgent);
-
-            CheckEndedGame();
-        }
-
-    }
-
-    public void OnPreyEnterDanger(PreyAgentFinal preyAgent)
-    {
-        if (preys.Contains(preyAgent))
-        {
-            ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
-
-            preyAgent.SetAgentDead();
-
-            preys.Remove(preyAgent);
-            disabledPreys.Add(preyAgent);
-
-            CheckEndedGame();
-        }      
-    }
-
-
-
-    public void OnHunterEnterDanger(HunterAgentFinal hunterAgent)
-    {
-        if (hunters.Contains(hunterAgent))
-        {
-            ObjectPool.Instance.GetObject(diePrefabHunter, hunterAgent.transform.position, Quaternion.identity);
-
-            hunterAgent.SetAgentDead();
-
-            hunters.Remove(hunterAgent);
-            disabledHunters.Add(hunterAgent);
-
-            CheckEndedGame();
-        }
-    }
-
-    public void OnBonusDestroyed(GameObject bonus)
-    {
-        if (speedBoostList.Contains(bonus))
-        {
-            StartCoroutine(RespawnBonus(bonus, delaySpeedBonusRespawn));
-        }
-        else if (camouflageList.Contains(bonus))
-        {
-            StartCoroutine(RespawnBonus(bonus, delayCamouflageRespawn));
-        }
-
-        bonus.SetActive(false); // destruction visuelle immédiate
-    }
-
     void CheckEndedGame()
     {
         if (preys.Count == 0)
@@ -302,16 +243,10 @@ public class HunterPreyEnvFinal : MonoBehaviour
             // Toutes les proies sont attrapées → les chasseurs gagnent
             EndEpisode(false);
         }
-        else if(hunters.Count == 0)
+        else if (hunters.Count == 0)
         {
             // Tous les chasseurs sont morts → les proies gagnent
             EndEpisode(true);
-        }
-        else
-        {
-            // Récompense partielle pour les chasseurs, punition pour les proies
-            hunterAgentGroup.AddGroupReward(1);
-            preyAgentGroup.AddGroupReward(-1);
         }
     }
 
@@ -323,15 +258,25 @@ public class HunterPreyEnvFinal : MonoBehaviour
     {
         StopAllCoroutines();
 
-        if (timeExpired)
+        if (timeExpired && hunters.Count != 0)
+        {
+            //foreach(var prey in preys)
+            //{
+            //    prey.SetWin();
+            //}
+            hunterAgentGroup.SetGroupReward(-1);
+            preyAgentGroup.SetGroupReward((float)preys.Count / (float)preyCount);
+            gameUI.PreyWin();
+        }
+        else if (hunters.Count == 0)
         {
             hunterAgentGroup.SetGroupReward(-1);
-            preyAgentGroup.SetGroupReward(1);
+            preyAgentGroup.SetGroupReward(0.5f);
             gameUI.PreyWin();
         }
         else
         {
-            hunterAgentGroup.SetGroupReward(1);
+            hunterAgentGroup.SetGroupReward((1 / (preyCount + 1)) * (preyKilledByHunter + 1));
             preyAgentGroup.SetGroupReward(-1);
             gameUI.HunterWin();
         }
@@ -347,6 +292,7 @@ public class HunterPreyEnvFinal : MonoBehaviour
     /// </summary>
     private void ResetEnv()
     {
+        preyKilledByHunter = 0;
         commBuffer.ClearDic();
         ObjectPool.Instance.ReturnObjects(energyList);
         ObjectPool.Instance.ReturnObjects(camouflageList);
@@ -354,7 +300,7 @@ public class HunterPreyEnvFinal : MonoBehaviour
         camouflageList.Clear();
         speedBoostList.Clear();
         energyList.Clear();
-        
+
 
         roomGenerator.Generate();
 
@@ -433,7 +379,7 @@ public class HunterPreyEnvFinal : MonoBehaviour
 
         for (int i = 0; i < energyPreyCount; i++)
         {
-            position = positons[i + hunterCount + preyCount];      
+            position = positons[i + hunterCount + preyCount];
             energyList.Add(ObjectPool.Instance.GetObject(energyPrey, position, Quaternion.identity, this.transform));
         }
 
@@ -453,4 +399,190 @@ public class HunterPreyEnvFinal : MonoBehaviour
         // Relancer le compte à rebours pour libérer les chasseurs
         Invoke(nameof(ReleaseHunters), hidingTime);
     }
+
+    #endregion
+
+    #region Agent Func
+
+    /// <summary>
+    /// Appelée lorsqu'une proie est attrapée par un chasseur.
+    /// Gère la mort de la proie, les récompenses/punitions et vérifie si la partie est terminée.
+    /// </summary>
+    /// <param name="prey">La proie attrapée (GameObject)</param>
+    public void OnPreyCaught(GameObject prey)
+    {
+        PreyAgentFinal preyAgent = prey.GetComponent<PreyAgentFinal>();
+
+        if (preys.Contains(preyAgent))
+        {
+            preyAgent.AddReward(-10f);
+
+            ObjectPool.Instance.GetObject(diePrefabPrey, prey.transform.position, Quaternion.identity);
+
+            preyAgent.SetAgentDead();
+
+            preys.Remove(preyAgent);
+            disabledPreys.Add(preyAgent);
+
+            // Récompense partielle pour les chasseurs, punition pour les proies
+            hunterAgentGroup.AddGroupReward(1);
+            preyAgentGroup.AddGroupReward(-1);
+
+            preyKilledByHunter++;
+
+            CheckEndedGame();
+        }      
+    }
+
+    /// <summary>
+    /// Appelée lorsqu'une proie collecte une source d'énergie.
+    /// Récompense les proies et relance le bonus après un délai.
+    /// </summary>
+    /// <param name="energyObj">Objet énergie collecté</param>
+    public void OnPreyEnergy(GameObject energyObj)
+    {
+        if (energyList.Contains(energyObj))
+        {
+            preyAgentGroup.AddGroupReward(1f);
+            StartCoroutine(RespawnBonus(energyObj, delayEnergyRespawn));
+        }
+    }
+
+    /// <summary>
+    /// Appelée lorsqu'une proie collecte un bonus de vitesse.
+    /// Récompense les proies et relance le bonus après un délai.
+    /// </summary>
+    /// <param name="obj">Objet vitesse collecté</param>
+    public void OnSpeedBoostCollected(GameObject obj)
+    {
+        if (speedBoostList.Contains(obj))
+        {
+            preyAgentGroup.AddGroupReward(1f);
+            StartCoroutine(RespawnBonus(obj,delaySpeedBonusRespawn));
+        }
+    }
+
+    /// <summary>
+    /// Appelée lorsqu'une proie collecte un camouflage.
+    /// Récompense les proies et relance le bonus après un délai.
+    /// </summary>
+    /// <param name="obj">Objet camouflage collecté</param>
+    public void OnCamouflageCollected(GameObject obj)
+    {
+        if (camouflageList.Contains(obj))
+        {
+            preyAgentGroup.AddGroupReward(1f);
+            StartCoroutine(RespawnBonus(obj,delayCamouflageRespawn));
+        }
+    }
+
+    /// <summary>
+    /// Coroutine utilisée pour réactiver un bonus après un certain délai.
+    /// </summary>
+    /// <param name="obj">Objet à réactiver</param>
+    /// <param name="delay">Temps d’attente avant la réactivation</param>
+    private IEnumerator RespawnBonus(GameObject obj, float delay)
+    {
+        obj.SetActive(false);
+        yield return new WaitForSeconds(delay);
+        obj.SetActive(true);
+    }
+
+    /// <summary>
+    /// Appelée lorsqu'une proie n’a plus d’énergie.
+    /// Gère la mort de la proie et vérifie si la partie est terminée.
+    /// </summary>
+    /// <param name="preyAgent">Proie concernée</param>
+    public void OnPreyEnergyDepleted(PreyAgentFinal preyAgent)
+    {
+        if (preys.Contains(preyAgent))
+        {
+            ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
+
+            preyAgentGroup.AddGroupReward(-1);
+
+            preyAgent.SetAgentDead();
+
+            preys.Remove(preyAgent);
+            disabledPreys.Add(preyAgent);          
+
+            CheckEndedGame();
+        }
+
+    }
+
+    /// <summary>
+    /// Appelée lorsqu'une proie entre dans une zone dangereuse.
+    /// Gère la mort immédiate de la proie.
+    /// </summary>
+    /// <param name="preyAgent">Proie concernée</param>
+    public void OnPreyEnterDanger(PreyAgentFinal preyAgent)
+    {
+        if (preys.Contains(preyAgent))
+        {
+            ObjectPool.Instance.GetObject(diePrefabPrey, preyAgent.transform.position, Quaternion.identity);
+
+            preyAgentGroup.AddGroupReward(-5);
+
+            preyAgent.SetAgentDead();
+
+            preys.Remove(preyAgent);
+            disabledPreys.Add(preyAgent);
+     
+
+            CheckEndedGame();
+        }      
+    }
+
+    /// <summary>
+    /// Appelée lorsqu'un chasseur entre dans une zone dangereuse.
+    /// Gère la mort immédiate du chasseur.
+    /// </summary>
+    /// <param name="hunterAgent">Chasseur concerné</param>
+    public void OnHunterEnterDanger(HunterAgentFinal hunterAgent)
+    {
+        if (hunters.Contains(hunterAgent))
+        {
+            ObjectPool.Instance.GetObject(diePrefabHunter, hunterAgent.transform.position, Quaternion.identity);
+
+            hunterAgentGroup.AddGroupReward(-5);
+
+            hunterAgent.SetAgentDead();
+
+            hunters.Remove(hunterAgent);
+            disabledHunters.Add(hunterAgent);           
+
+            CheckEndedGame();
+        }
+    }
+
+
+    /// <summary>
+    /// Appelée lorsqu’un bonus est détruit (par exemple consommé).
+    /// Récompense les chasseurs et relance le bonus après un délai.
+    /// </summary>
+    /// <param name="bonus">Objet bonus détruit</param>
+    public void OnBonusDestroyed(GameObject bonus)
+    {
+        hunterAgentGroup.AddGroupReward(0.1f);
+
+        if (speedBoostList.Contains(bonus))
+        {
+            StartCoroutine(RespawnBonus(bonus, delaySpeedBonusRespawn));
+        }
+        else if (camouflageList.Contains(bonus))
+        {
+            StartCoroutine(RespawnBonus(bonus, delayCamouflageRespawn));
+        }
+        else if (energyList.Contains(bonus)) 
+        {
+            StartCoroutine(RespawnBonus(bonus, delayEnergyRespawn));
+        }
+
+
+        bonus.SetActive(false); // destruction visuelle immédiate
+    }
+
+    #endregion
+
 }

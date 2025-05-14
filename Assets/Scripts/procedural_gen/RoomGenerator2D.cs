@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-
+/// <summary>
+/// Classe de génération de pièce en 2D, avec murs, colonnes et objets selon des règles de placement.
+/// </summary>
 public class RoomGenerator2D : MonoBehaviour
 {
     public int width = 10;
@@ -26,6 +28,9 @@ public class RoomGenerator2D : MonoBehaviour
 
     private List<GameObject> objects;
 
+    /// <summary>
+    /// Contrainte de placement.
+    /// </summary>
     public enum PlacementConstraint
     {
         None,
@@ -35,7 +40,9 @@ public class RoomGenerator2D : MonoBehaviour
         AvoidColumnNearby
     }
 
-
+    /// <summary>
+    /// Représente un objet de la grille.
+    /// </summary>
     [System.Serializable]
     public class GridObject
     {
@@ -56,18 +63,18 @@ public class RoomGenerator2D : MonoBehaviour
 
     private GridObject[,] grid;
 
+    /// <summary>
+    /// Initialise les données internes du générateur.
+    /// </summary>
     private void Awake()
     {
         objects = new List<GameObject>();
         grid = new GridObject[width, height];
     }
 
-    void Start()
-    {
-        //objects = new List<GameObject>();
-        //Generate();
-    }
-
+    /// <summary>
+    /// Lance la génération complète de la pièce : sol, murs, colonnes et objets.
+    /// </summary>
     public void Generate()
     {
         ObjectPool.Instance.ReturnObjects(objects);
@@ -95,6 +102,9 @@ public class RoomGenerator2D : MonoBehaviour
         PlaceObjects();
     }
 
+    /// <summary>
+    /// Place les tiles sur toute la grille.
+    /// </summary>
     void PlaceFloorTiles()
     {
         if (floorPrefab == null) return;
@@ -108,14 +118,14 @@ public class RoomGenerator2D : MonoBehaviour
                 Vector3 pos = new Vector3(x * cellSize + offset, 0, y * cellSize - offset);
                 GameObject tile = ObjectPool.Instance.GetObject(floorPrefab, pos,Quaternion.identity, transform);
                 objects.Add(tile);
-                //tile.transform.localPosition = pos;
-                //tile.transform.localRotation = Quaternion.identity;
                 tile.transform.localScale = new Vector3(cellSize, 1, cellSize);
             }
         }
     }
 
-
+    /// <summary>
+    /// Place les objets définis dans la grille selon leur probabilité et contraintes.
+    /// </summary>
     void PlaceObjects()
     {
         foreach (var gridObject in objectPrefabs)
@@ -160,6 +170,13 @@ public class RoomGenerator2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Vérifie si un objet peut être placé à une position donnée sans chevauchement.
+    /// </summary>
+    /// <param name="startX">Coordonnée X de départ.</param>
+    /// <param name="startY">Coordonnée Y de départ.</param>
+    /// <param name="gridObject">Objet à placer.</param>
+    /// <returns>Vrai si le placement est possible, sinon faux.</returns>
     bool CanPlaceObject(int startX, int startY, GridObject gridObject)
     {
         for (int x = startX; x < startX + gridObject.widthInCells; x++)
@@ -175,6 +192,12 @@ public class RoomGenerator2D : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Place un objet sur la grille avec gestion de la rotation et enregistrement dans la grille.
+    /// </summary>
+    /// <param name="startX">Coordonnée X de départ.</param>
+    /// <param name="startY">Coordonnée Y de départ.</param>
+    /// <param name="gridObject">Objet à placer.</param>
     void PlaceGridObject(int startX, int startY, GridObject gridObject)
     {
         bool rotated = gridObject.allowRandomRotation && Random.value < 0.5f;
@@ -214,8 +237,9 @@ public class RoomGenerator2D : MonoBehaviour
         }
     }
 
-
-
+    /// <summary>
+    /// Place les murs autour de la pièce et marque les coins comme colonnes.
+    /// </summary>
     void PlaceBordersAndCorners()
     {
         float offset = cellSize / 2;
@@ -245,6 +269,14 @@ public class RoomGenerator2D : MonoBehaviour
         MarkColumnCell(width - 1, height - 1, new Vector3((width - 1) * cellSize, 0, (height - 1) * cellSize));
     }
 
+    /// <summary>
+    /// Place un mur à une position donnée et marque les cellules qu’il occupe.
+    /// </summary>
+    /// <param name="localPosition">Position locale du mur.</param>
+    /// <param name="yRotation">Rotation du mur.</param>
+    /// <param name="startX">Coordonnée X de départ.</param>
+    /// <param name="startY">Coordonnée Y de départ.</param>
+    /// <param name="horizontal">Indique si le mur est horizontal.</param>
     void PlaceWallAndMarkCells(Vector3 localPosition, float yRotation, int startX, int startY, bool horizontal)
     {
         GameObject wall = ObjectPool.Instance.GetObject(wallMarker.prefab, localPosition, Quaternion.Euler(0f, yRotation, 0f), transform);
@@ -264,12 +296,16 @@ public class RoomGenerator2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Marque une cellule comme étant occupée par une colonne.
+    /// </summary>
+    /// <param name="x">Coordonnée X de la cellule.</param>
+    /// <param name="y">Coordonnée Y de la cellule.</param>
+    /// <param name="localPosition">Position locale de la colonne.</param>
     void MarkColumnCell(int x, int y, Vector3 localPosition)
     {  
         GameObject column = ObjectPool.Instance.GetObject(columnMarker.prefab, localPosition, Quaternion.identity, transform);
         objects.Add(column);
-        //column.transform.localPosition = localPosition;
-        //column.transform.localRotation = Quaternion.identity;
 
         if (x >= 0 && x < width && y >= 0 && y < height)
         {
@@ -277,6 +313,14 @@ public class RoomGenerator2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Vérifie si un objet cible est proche d’une position donnée.
+    /// </summary>
+    /// <param name="x">Coordonnée X de la position.</param>
+    /// <param name="y">Coordonnée Y de la position.</param>
+    /// <param name="target">Objet cible à rechercher.</param>
+    /// <param name="range">Rayon de recherche autour de la position.</param>
+    /// <returns>Vrai si un objet cible est proche, sinon faux.</returns>
     bool IsNearby(int x, int y, GridObject target, int range = 1)
     {
         for (int dx = -range; dx <= range; dx++)
@@ -296,6 +340,12 @@ public class RoomGenerator2D : MonoBehaviour
         return false;
     }
 
+
+    /// <summary>
+    /// Retourne une liste de positions libres dans le monde, en évitant murs et objets spécifiques.
+    /// </summary>
+    /// <param name="count">Nombre de positions à récupérer.</param>
+    /// <returns>Liste de positions disponibles dans le monde.</returns>
     public List<Vector3> GetAvailableWorldPositions(int count)
     {
         List<Vector3> positions = new List<Vector3>();
@@ -305,7 +355,7 @@ public class RoomGenerator2D : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (grid[x, y] == null && !IsNearby(x, y, wallMarker))
+                if (grid[x, y] == null && !IsNearby(x, y, wallMarker) && !IsNearby(x, y, objectPrefabs[objectPrefabs.Count-1]))
                 {
                     Vector3 worldPos = new Vector3(x * cellSize + offset, 0.5f, y * cellSize - offset);
                     positions.Add(worldPos);
@@ -327,7 +377,9 @@ public class RoomGenerator2D : MonoBehaviour
 
 
 
-
+    /// <summary>
+    /// Dessine la grille en mode édition pour visualiser les objets placés.
+    /// </summary>
     private void OnDrawGizmos()
     {
         if (!debug)

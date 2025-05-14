@@ -1,12 +1,8 @@
 using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.LightTransport;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 /// <summary>
 /// Agent contrôlé par ML-Agents représentant un chasseur dans l'environnement.
@@ -15,6 +11,10 @@ using static Unity.Burst.Intrinsics.X86.Avx;
 /// </summary>
 public class HunterAgentFinal : Agent
 {
+    #region Variables
+
+    // === Mouvement ===
+
     /// <summary>
     /// Vitesse de déplacement en avant du chasseur.
     /// </summary>
@@ -26,24 +26,65 @@ public class HunterAgentFinal : Agent
     public float rotationSpeed = 200f;
 
     /// <summary>
+    /// Position précédente de l’agent.
+    /// </summary>
+    private Vector3 lastPosition;
+
+    /// <summary>
+    /// Rotation accumulée, utilisée pour détecter les comportements de rotation.
+    /// </summary>
+    private float accumulatedRotation = 0f;
+
+    /// <summary>
+    /// Facteur de décroissance de la rotation accumulée.
+    /// </summary>
+    private float rotationDecay = 0.95f;
+
+    /// <summary>
     /// Indique si le chasseur est activé (autorisé à se déplacer).
     /// </summary>
     private bool active = false;
 
+    // === Perception ===
+
     public CustomRayPerception rayPerception;
     public int observationSize = 56;
+
+    // === Communication ===
+
     public bool enableCommunication = true;
+    public string agentId;
+    private List<string> tagToCommunicate;
+
+    // === État de l’agent ===
+
+    /// <summary>
+    /// Indique si l’agent est "mort".
+    /// </summary>
+    private bool isDead = false;
+
+    // === Exploration / Historique de position ===
+
+    private Queue<Vector3> positionHistory;
+    private int historySize = 100;
+    private float minExplorationRadius = 3f;
+
+    // === Références ===
 
     /// <summary>
     /// Référence vers l’environnement principal, pour signaler les événements.
     /// </summary>
     private HunterPreyEnvFinal env;
 
+    #endregion
+
     /// <summary>
     /// Attribue l'environnement au chasseur.
     /// </summary>
     /// <param name="e">L’environnement principal HunterPreyEnv.</param>
     public void SetEnv(HunterPreyEnvFinal e) => env = e;
+
+    #region Agent
 
     /// <summary>
     /// Réinitialise l’agent au début d’un nouvel épisode.
@@ -52,6 +93,8 @@ public class HunterAgentFinal : Agent
     {
         active = false; // Les chasseurs sont inactifs au début
         lastPosition = transform.position;
+        positionHistory.Clear();
+        accumulatedRotation = 0;
     }
 
     /// <summary>
@@ -64,24 +107,24 @@ public class HunterAgentFinal : Agent
     /// </summary>
     public void Deactivate() => active = false;
 
-    private bool isDead = false; // Indique si l'agent est "mort"
-
-    public string agentId;
-
-    private List<string> tagToCommunicate;
-
-    private Vector3 lastPosition;
-
     public override void Initialize()
     {
         agentId = System.Guid.NewGuid().ToString().Substring(0, 8); // ex: "a3f2c0d1"
         tagToCommunicate = new List<string>
         {
             "Prey",
-            "EnergyPrey",
-            "BoostSpeed",
-            "Camouflage"
+            //"EnergyPrey",
+            //"BoostSpeed",
+            //"Camouflage"
         };
+        positionHistory = new Queue<Vector3>();
+
+    }
+
+    public new void AddReward(float reward)
+    {
+        if (!isDead)
+            base.AddReward(reward);
     }
 
     public void SetAgentDead()
@@ -135,7 +178,8 @@ public class HunterAgentFinal : Agent
                 CommunicationBuffer.Message message = new CommunicationBuffer.Message
                 {
                     rayResults = obs[1],
-                    localPosition = transform.localPosition
+                    localPosition = transform.localPosition,
+                    rotation = transform.eulerAngles.y / 360f
                 };
                 env.commBuffer.SendMessageInfo(agentId, message, true);
             }
@@ -158,7 +202,8 @@ public class HunterAgentFinal : Agent
                 if (entry.Key != agentId)
                 {
                     sensor.AddObservation(entry.Value.localPosition);
-                    observationCount += 3;
+                    sensor.AddObservation(entry.Value.rotation);
+                    observationCount += 4;
 
                     foreach (var r in entry.Value.rayResults)
                     {
@@ -203,7 +248,9 @@ public class HunterAgentFinal : Agent
         // Appliquer la translation vers l’avant
         transform.position += transform.forward * forward * moveSpeed * Time.deltaTime;
 
-        if(forward < 0.2f)
+        //AddReward(-0.001f * env.GetTimeFloat());
+
+        if (forward < 0.2f)
         {
             AddReward(-0.001f);
         }
@@ -219,7 +266,70 @@ public class HunterAgentFinal : Agent
         }
 
         lastPosition = transform.position;
+
+        //float minHunterDistance = float.MaxValue;
+        //foreach (var hunter in env.GetAllPreys())
+        //{
+        //    float dist = Vector3.Distance(transform.position, hunter.transform.position);
+        //    if (dist < minHunterDistance)
+        //        minHunterDistance = dist;
+        //}
+
+        //// Récompense plus grande quand distance est plus petite
+        //AddReward(0.001f * (1f - Mathf.Clamp01(minHunterDistance / 20f)));
+
+        //if (minHunterDistance < 2f)
+        //{
+        //    AddReward(0.05f); // Bonus s'il est très proche
+        //}
+
+        //float minHunterDistance = float.MaxValue;
+        //foreach (var hunter in env.GetAllHunters())
+        //{
+        //    if(hunter.gameObject == this.gameObject) continue;
+        //    float dist = Vector3.Distance(transform.position, hunter.transform.position);
+        //    if (dist < minHunterDistance)
+        //        minHunterDistance = dist;
+        //}
+
+        //if (minHunterDistance < 5f)
+        //{
+        //    AddReward(-0.05f);
+        //}
+
+        //// Mémorisation de la position
+        //positionHistory.Enqueue(transform.position);
+        //if (positionHistory.Count > historySize)
+        //    positionHistory.Dequeue();
+
+        //// Calcul de la distance moyenne par rapport au centre de la zone visitée
+        //Vector3 avgPos = Vector3.zero;
+        //foreach (var pos in positionHistory)
+        //    avgPos += pos;
+        //avgPos /= positionHistory.Count;
+
+        //float radius = 0f;
+        //foreach (var pos in positionHistory)
+        //    radius += Vector3.Distance(avgPos, pos);
+        //radius /= positionHistory.Count;
+
+        //// Si le rayon moyen est faible, pénaliser
+        //if (radius < minExplorationRadius)
+        //{
+        //    AddReward(reward: -0.002f);
+        //}
+
+        //accumulatedRotation = accumulatedRotation * rotationDecay + Mathf.Abs(rotation);
+        //if (accumulatedRotation > 10f)
+        //{
+        //    AddReward(-0.001f); // Pénalise le comportement trop tournoyant
+        //}
+
     }
+
+    #endregion
+
+    #region Physics
 
     /// <summary>
     /// Détecte la collision avec une proie. Capture la proie si contact.
@@ -232,35 +342,41 @@ public class HunterAgentFinal : Agent
         if (collision.gameObject.CompareTag("Prey"))
         {
             // Récompense positive pour la capture
-            AddReward(1f);
+            AddReward(2f);
 
             // Notifie l’environnement qu’une proie a été attrapée
             env.OnPreyCaught(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Wall"))
         {
-            SetReward(-1f);
-            env.OnHunterEnterDanger(this);
+            AddReward(-2f);
+            //env.OnHunterEnterDanger(this);
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
-            AddReward(-0.2f);
+            AddReward(-2f);
         }
     }
 
+    /// <summary>
+    /// Detecte les collisions trigger, avec les bonus, les pieges, et la limite de la map.
+    /// </summary>
+    /// <param name="other">Trigger détectée avec un autre objet.</param>
     private void OnTriggerEnter(Collider other)
     {
         if (isDead) return;
 
-        if (other.CompareTag("Danger")) 
+        if (other.CompareTag("Danger") || other.CompareTag("LimitMap"))
         {
-            AddReward(-1f);
+            SetReward(-10f);
             env.OnHunterEnterDanger(this);
         }
-        if (other.CompareTag("SpeedBoost") || other.CompareTag("Camouflage"))
+        if (other.CompareTag("SpeedBoost") || other.CompareTag("Camouflage") || other.CompareTag("EnergyPrey"))
         {
-            AddReward(0.2f); // petite récompense stratégique
+            AddReward(0.1f); // petite récompense stratégique
             env.OnBonusDestroyed(other.gameObject);
         }
     }
+
+    #endregion
 }
