@@ -2,6 +2,8 @@
 
 Ce projet Unity explore l'apprentissage par renforcement multi-agent dans un environnement 3D simulé. Deux équipes, les chasseurs et les proies, s'affrontent dans un environnement avec obstacles. L'objectif est d'étudier des comportements émergents de coopération et de stratégie via l'apprentissage par renforcement profond.
 
+![Elements du projet](elements.PNG)
+
 ## Contexte
 Projet réalisé dans le cadre du Master 2 Vision et Intelligence Artificielle (Université Paris Cité).
 
